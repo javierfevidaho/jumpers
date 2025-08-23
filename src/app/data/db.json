@@ -384,7 +384,74 @@
       ],
       "created_at": "2024-01-15T11:45:00Z",
       "updated_at": "2024-01-15T11:45:00Z"
+    },
+        {
+      "id": 111,
+      "name": "Tablecloth Rentals",
+      "description": "Black and white tablecloths for 6ft tables at $5 each, perfect for adding a touch of elegance to your event, Available in black and white.",
+      "price": 0,
+      "rent_price": 5,
+      "category": "mesas",
+      "business_type": "rent",
+      "in_stock": 150,
+      "images": [
+        "/images/rents/manltelblanco1.jpg"
+      ],
+      "created_at": "2025-01-15T11:45:00Z",
+      "updated_at": "2025-01-15T11:45:00Z"
+    },
+    {
+      "id": 112,
+      "name": "Duramax Resin/Garden Chairs",
+      "description": "Duramax resin or garden chairs available for rent at $25 each. Perfect for outdoor events, these chairs are durable and comfortable, ensuring your guests have a great seating option.",
+      "price": 0,
+      "rent_price": 25,
+      "category": "sillas",
+      "business_type": "sale",
+      "in_stock": 100,
+      "images": [
+        "/images/rents/sillamadero4.jpg",
+        "/images/rents/sillamadero-2.jpg",
+        "/images/rents/sillamadero3.jpg",
+        "/images/rents/sillamadero4.jpg"
+      ],
+      "created_at": "2024-06-01T11:50:00Z",
+      "updated_at": "2024-06-01T11:50:00Z"
+    },
+    {
+      "id": 113,
+      "name": "60 Inch Tablecloth Rentals",
+      "description": "Black and white tablecloths for 60-inch round tablecloths at $10 each. Available in black and white.",
+      "price": 0,
+      "rent_price": 10,
+      "category": "mesas",
+      "business_type": "rent",
+      "in_stock": 50,
+      "images": [
+        "/images/rents/manltelblanco1.jpg"
+      ],
+      "created_at": "2024-06-01T11:55:00Z",
+      "updated_at": "2024-06-01T11:55:00Z"
+    },
+    {
+      "id": 114,
+      "name": "Bouncer with Slide",
+      "description": "Fun inflatable bouncer with slide, available for rent at $140. Perfect for kids' parties and events, providing hours of entertainment.",
+      "price": 0,
+      "rent_price": 170,
+      "category": "mesas",
+      "business_type": "rent",
+      "in_stock": 15,
+      "images": [
+        "/images/sales/slide.jpg",
+        "/images/sales/slide-2.jpg",
+        "/images/sales/slide-3.jpg",
+        "/images/sales/slide-4.jpg"
+      ],
+      "created_at": "2024-06-01T12:00:00Z",
+      "updated_at": "2024-06-01T12:00:00Z"
     }
+
   ],
   "orders": [
     {
