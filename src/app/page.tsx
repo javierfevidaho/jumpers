@@ -914,12 +914,6 @@ export default function Home() {
                 Login
               </button>
             </div>
-            
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
-              <p><strong>Demo Credentials:</strong></p>
-              <p>Email: admin@hernandezjumpers.com</p>
-              <p>Password: admin123</p>
-            </div>
           </div>
         </div>
       )}
