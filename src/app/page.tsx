@@ -1,5 +1,6 @@
 'use client'
-import { useState, useEffect } from 'react';
+'use client'
+import { useState } from 'react';
 import { ShoppingCart, Plus, Minus, User, Phone, MapPin, X, Menu, Settings, Eye, EyeOff, Package, Users, ClipboardList, LogOut, Edit, Trash2, Save, Calendar } from 'lucide-react';
 
 // ============================
@@ -63,7 +64,7 @@ const initialProducts: Product[] = [
     description: "Industrial quality plastic chairs perfect for events. Stackable, durable and weather resistant. Available in white and other colors.",
     price: 15,
     rent_price: 1,
-    images: ["/api/placeholder/300/200"],
+    images: ["https://images.unsplash.com/photo-1549497538-303791108f95?w=300&h=200&fit=crop"],
     business_type: "both",
     category: "chairs",
     stock: 100,
@@ -75,7 +76,7 @@ const initialProducts: Product[] = [
     description: "8-foot rectangular tables ideal for parties and events. Heavy duty construction, easy to clean surface.",
     price: 120,
     rent_price: 8,
-    images: ["/api/placeholder/300/200"],
+    images: ["https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=300&h=200&fit=crop"],
     business_type: "both",
     category: "tables",
     stock: 25,
@@ -87,7 +88,7 @@ const initialProducts: Product[] = [
     description: "Large castle bounce house perfect for kids parties. Safe, clean and with 2-year seam warranty. Professional installation included.",
     price: 2500,
     rent_price: 150,
-    images: ["/api/placeholder/300/200"],
+    images: ["https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=300&h=200&fit=crop"],
     business_type: "both",
     category: "bounce_houses",
     stock: 5,
@@ -99,7 +100,7 @@ const initialProducts: Product[] = [
     description: "60-inch round tables perfect for elegant events. Seats 8-10 people comfortably.",
     price: 100,
     rent_price: 7,
-    images: ["/api/placeholder/300/200"],
+    images: ["https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop"],
     business_type: "both",
     category: "tables",
     stock: 15,
@@ -111,7 +112,7 @@ const initialProducts: Product[] = [
     description: "Elegant gold chiavari chairs for weddings and formal events. Lightweight yet durable.",
     price: 45,
     rent_price: 3,
-    images: ["/api/placeholder/300/200"],
+    images: ["https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=300&h=200&fit=crop"],
     business_type: "both",
     category: "chairs",
     stock: 80,
@@ -123,7 +124,7 @@ const initialProducts: Product[] = [
     description: "Pink princess themed bounce house with slide. Perfect for little princesses' birthday parties.",
     price: 2800,
     rent_price: 175,
-    images: ["/api/placeholder/300/200"],
+    images: ["https://images.unsplash.com/photo-1527853787696-f7be74f2e39a?w=300&h=200&fit=crop"],
     business_type: "both",
     category: "bounce_houses",
     stock: 3,
@@ -267,7 +268,7 @@ export default function Home() {
       description: 'Product description',
       price: 0,
       rent_price: 0,
-      images: ['/api/placeholder/300/200'],
+      images: ['https://images.unsplash.com/photo-1549497538-303791108f95?w=300&h=200&fit=crop'],
       business_type: 'both',
       category: 'chairs',
       stock: 0,
@@ -695,6 +696,18 @@ export default function Home() {
                 <div key={order.id} className="bg-white rounded-xl shadow-lg p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                <input
+                  type="url"
+                  value={editingProduct.images[0] || ''}
+                  onChange={(e) => setEditingProduct({...editingProduct, images: [e.target.value]})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="https://example.com/image.jpg"
+                />
+                <p className="text-xs text-gray-500 mt-1">Paste the URL of your product image</p>
+              </div>
+              
+              <div>
                       <h3 className="text-lg font-bold text-gray-800">Order #{order.id}</h3>
                       <p className="text-gray-600">Customer: {order.customer.name}</p>
                       <p className="text-gray-600">Phone: {order.customer.phone}</p>
