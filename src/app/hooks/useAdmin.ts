@@ -1,4 +1,5 @@
 // src/app/hooks/useAdmin.ts - Hook actualizado con integración API
+'use client';
 import { useState, useEffect } from 'react';
 import { Product } from '../types';
 
