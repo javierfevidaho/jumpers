@@ -1,22 +1,212 @@
-// src/app/page.tsx - Página Principal Simplificada
 'use client'
-import React, { useState } from 'react';
-import { ShoppingCart, Plus, Minus, User, Phone, MapPin, X, Menu, Settings } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ShoppingCart, Plus, Minus, User, Phone, MapPin, X, Menu, Settings, Eye, EyeOff, Package, Users, ClipboardList, LogOut, Edit, Trash2, Save, Calendar } from 'lucide-react';
 
-// Import types
-import { Product, CartItem, CustomerData } from './types';
+// ============================
+// TYPES
+// ============================
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  rent_price?: number;
+  images: string[];
+  business_type: 'sale' | 'rent' | 'both';
+  category: string;
+  stock: number;
+  created_at: string;
+}
 
-// Import hooks
-import { useProducts } from './hooks/useAdmin';
+export interface CartItem extends Product {
+  quantity: number;
+  type: 'sale' | 'rent';
+}
 
+export interface CustomerData {
+  name: string;
+  phone: string;
+  address: string;
+  rentDate: string;
+  eventType: 'sale' | 'rent';
+}
+
+export interface Order {
+  id: string;
+  customer: CustomerData;
+  items: CartItem[];
+  total: number;
+  status: 'pending' | 'confirmed' | 'delivered' | 'cancelled';
+  created_at: string;
+  notes?: string;
+}
+
+export interface Customer {
+  id: string;
+  name: string;
+  phone: string;
+  address: string;
+  email?: string;
+  orders_count: number;
+  total_spent: number;
+  last_order: string;
+  created_at: string;
+}
+
+// ============================
+// SAMPLE DATA
+// ============================
+const initialProducts: Product[] = [
+  {
+    id: 1,
+    name: "Duramax Plastic Chairs",
+    description: "Industrial quality plastic chairs perfect for events. Stackable, durable and weather resistant. Available in white and other colors.",
+    price: 15,
+    rent_price: 1,
+    images: ["/api/placeholder/300/200"],
+    business_type: "both",
+    category: "chairs",
+    stock: 100,
+    created_at: "2024-01-15T10:00:00Z"
+  },
+  {
+    id: 2,
+    name: "Rectangular Tables 8ft",
+    description: "8-foot rectangular tables ideal for parties and events. Heavy duty construction, easy to clean surface.",
+    price: 120,
+    rent_price: 8,
+    images: ["/api/placeholder/300/200"],
+    business_type: "both",
+    category: "tables",
+    stock: 25,
+    created_at: "2024-01-15T10:00:00Z"
+  },
+  {
+    id: 3,
+    name: "Bounce House Castle",
+    description: "Large castle bounce house perfect for kids parties. Safe, clean and with 2-year seam warranty. Professional installation included.",
+    price: 2500,
+    rent_price: 150,
+    images: ["/api/placeholder/300/200"],
+    business_type: "both",
+    category: "bounce_houses",
+    stock: 5,
+    created_at: "2024-01-15T10:00:00Z"
+  },
+  {
+    id: 4,
+    name: "Round Tables 60in",
+    description: "60-inch round tables perfect for elegant events. Seats 8-10 people comfortably.",
+    price: 100,
+    rent_price: 7,
+    images: ["/api/placeholder/300/200"],
+    business_type: "both",
+    category: "tables",
+    stock: 15,
+    created_at: "2024-01-15T10:00:00Z"
+  },
+  {
+    id: 5,
+    name: "Chiavari Chairs Gold",
+    description: "Elegant gold chiavari chairs for weddings and formal events. Lightweight yet durable.",
+    price: 45,
+    rent_price: 3,
+    images: ["/api/placeholder/300/200"],
+    business_type: "both",
+    category: "chairs",
+    stock: 80,
+    created_at: "2024-01-15T10:00:00Z"
+  },
+  {
+    id: 6,
+    name: "Princess Bounce House",
+    description: "Pink princess themed bounce house with slide. Perfect for little princesses' birthday parties.",
+    price: 2800,
+    rent_price: 175,
+    images: ["/api/placeholder/300/200"],
+    business_type: "both",
+    category: "bounce_houses",
+    stock: 3,
+    created_at: "2024-01-15T10:00:00Z"
+  }
+];
+
+const initialOrders: Order[] = [
+  {
+    id: "ORD001",
+    customer: {
+      name: "Maria Rodriguez",
+      phone: "(480) 555-0123",
+      address: "1234 Main St, Phoenix, AZ",
+      rentDate: "2024-02-15",
+      eventType: "rent"
+    },
+    items: [
+      { ...initialProducts[0], quantity: 20, type: "rent" },
+      { ...initialProducts[1], quantity: 3, type: "rent" }
+    ],
+    total: 44,
+    status: "confirmed",
+    created_at: "2024-02-01T10:30:00Z",
+    notes: "Birthday party for 50 guests"
+  },
+  {
+    id: "ORD002",
+    customer: {
+      name: "John Smith",
+      phone: "(623) 555-0456",
+      address: "5678 Oak Ave, Phoenix, AZ",
+      rentDate: "",
+      eventType: "sale"
+    },
+    items: [
+      { ...initialProducts[0], quantity: 10, type: "sale" }
+    ],
+    total: 150,
+    status: "pending",
+    created_at: "2024-02-02T14:15:00Z"
+  }
+];
+
+const initialCustomers: Customer[] = [
+  {
+    id: "CUST001",
+    name: "Maria Rodriguez",
+    phone: "(480) 555-0123",
+    address: "1234 Main St, Phoenix, AZ",
+    email: "maria.rodriguez@email.com",
+    orders_count: 3,
+    total_spent: 245,
+    last_order: "2024-02-01",
+    created_at: "2023-12-15T09:00:00Z"
+  },
+  {
+    id: "CUST002",
+    name: "John Smith",
+    phone: "(623) 555-0456",
+    address: "5678 Oak Ave, Phoenix, AZ",
+    orders_count: 1,
+    total_spent: 150,
+    last_order: "2024-02-02",
+    created_at: "2024-01-20T11:30:00Z"
+  }
+];
+
+// ============================
+// MAIN COMPONENT
+// ============================
 export default function Home() {
-  // State
+  // ============================
+  // STATE - GENERAL
+  // ============================
   const [currentView, setCurrentView] = useState<'home' | 'sales' | 'rentals' | 'about'>('home');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  
-  // Customer data
+
+  // ============================
+  // STATE - CUSTOMER
+  // ============================
   const [customerData, setCustomerData] = useState<CustomerData>({
     name: '',
     phone: '',
@@ -25,18 +215,97 @@ export default function Home() {
     eventType: 'sale'
   });
 
-  // Products hook
-  const { products, loading, error } = useProducts();
+  // ============================
+  // STATE - ADMIN
+  // ============================
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [showAdminLogin, setShowAdminLogin] = useState<boolean>(false);
+  const [adminCredentials, setAdminCredentials] = useState({ email: '', password: '' });
+  const [adminView, setAdminView] = useState<'products' | 'orders' | 'customers'>('products');
+  const [showPasswordField, setShowPasswordField] = useState<boolean>(false);
 
-  // Separate products by type
-  const saleProducts = products.filter(p => 
-    p.business_type === 'sale' || p.business_type === 'both'
-  );
-  const rentProducts = products.filter(p => 
-    p.business_type === 'rent' || p.business_type === 'both'
-  );
+  // ============================
+  // STATE - DATA
+  // ============================
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [orders, setOrders] = useState<Order[]>(initialOrders);
+  const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
-  // Cart functions
+  // ============================
+  // STATE - PRODUCT EDITING
+  // ============================
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [showProductForm, setShowProductForm] = useState<boolean>(false);
+
+  // ============================
+  // ADMIN FUNCTIONS
+  // ============================
+  const handleAdminLogin = () => {
+    if (adminCredentials.email === 'admin@hernandezjumpers.com' && adminCredentials.password === 'admin123') {
+      setIsAdmin(true);
+      setShowAdminLogin(false);
+      setAdminCredentials({ email: '', password: '' });
+    } else {
+      alert('Invalid credentials');
+    }
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdmin(false);
+    setAdminView('products');
+  };
+
+  // ============================
+  // PRODUCT FUNCTIONS
+  // ============================
+  const addNewProduct = () => {
+    const newProduct: Product = {
+      id: Date.now(),
+      name: 'New Product',
+      description: 'Product description',
+      price: 0,
+      rent_price: 0,
+      images: ['/api/placeholder/300/200'],
+      business_type: 'both',
+      category: 'chairs',
+      stock: 0,
+      created_at: new Date().toISOString()
+    };
+    setEditingProduct(newProduct);
+    setShowProductForm(true);
+  };
+
+  const saveProduct = () => {
+    if (editingProduct) {
+      const existingIndex = products.findIndex(p => p.id === editingProduct.id);
+      if (existingIndex >= 0) {
+        const updatedProducts = [...products];
+        updatedProducts[existingIndex] = editingProduct;
+        setProducts(updatedProducts);
+      } else {
+        setProducts([...products, editingProduct]);
+      }
+      setEditingProduct(null);
+      setShowProductForm(false);
+    }
+  };
+
+  const deleteProduct = (id: number) => {
+    if (confirm('Are you sure you want to delete this product?')) {
+      setProducts(products.filter(p => p.id !== id));
+    }
+  };
+
+  const editProduct = (product: Product) => {
+    setEditingProduct(product);
+    setShowProductForm(true);
+  };
+
+  // ============================
+  // CART FUNCTIONS
+  // ============================
   const addToCart = (product: Product, type: 'sale' | 'rent') => {
     const existingItem = cart.find(item => item.id === product.id && item.type === type);
     if (existingItem) {
@@ -75,7 +344,9 @@ export default function Home() {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  // WhatsApp function
+  // ============================
+  // WHATSAPP FUNCTION
+  // ============================
   const sendToWhatsApp = () => {
     if (!customerData.name || !customerData.phone || !customerData.address) {
       alert('Please complete all required fields');
@@ -83,7 +354,23 @@ export default function Home() {
     }
 
     const total = getTotalPrice();
+    const orderId = `ORD${Date.now()}`;
+    
+    // Create new order
+    const newOrder: Order = {
+      id: orderId,
+      customer: customerData,
+      items: [...cart],
+      total: total,
+      status: 'pending',
+      created_at: new Date().toISOString()
+    };
+    
+    setOrders([...orders, newOrder]);
+    
+    // Create WhatsApp message
     let message = `🎉 NEW ORDER - HERNANDEZ JUMPERS\n\n`;
+    message += `📋 Order ID: ${orderId}\n`;
     message += `👤 Customer: ${customerData.name}\n`;
     message += `📱 Phone: ${customerData.phone}\n`;
     message += `📍 Address: ${customerData.address}\n`;
@@ -114,26 +401,138 @@ export default function Home() {
     setShowCart(false);
   };
 
-  // Loading state
+  // ============================
+  // ORDER FUNCTIONS
+  // ============================
+  const updateOrderStatus = (orderId: string, newStatus: 'pending' | 'confirmed' | 'delivered' | 'cancelled') => {
+    setOrders(orders.map(order => 
+      order.id === orderId ? { ...order, status: newStatus } : order
+    ));
+  };
+
+  // ============================
+  // FILTER FUNCTIONS
+  // ============================
+  const saleProducts = products.filter(p => 
+    p.business_type === 'sale' || p.business_type === 'both'
+  );
+  const rentProducts = products.filter(p => 
+    p.business_type === 'rent' || p.business_type === 'both'
+  );
+
+  // ============================
+  // RENDER FUNCTIONS
+  // ============================
+  const renderProductCard = (product: Product, showActions: boolean = false) => (
+    <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+      <div className="h-48 bg-gray-100 flex items-center justify-center relative">
+        <img 
+          src={product.images[0]} 
+          alt={product.name}
+          className="max-w-full max-h-full object-contain"
+        />
+        {currentView === 'sales' && (
+          <div className="absolute top-2 right-2 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
+            SALE
+          </div>
+        )}
+        {currentView === 'rentals' && (
+          <div className="absolute top-2 right-2 bg-yellow-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
+            RENTAL
+          </div>
+        )}
+      </div>
+      <div className="p-6">
+        <div className="flex justify-between items-start mb-2">
+          <h4 className="text-lg font-bold text-gray-800">{product.name}</h4>
+          {showActions && (
+            <div className="flex space-x-1">
+              <button
+                onClick={() => editProduct(product)}
+                className="text-blue-600 hover:text-blue-800 p-1"
+              >
+                <Edit className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => deleteProduct(product.id)}
+                className="text-red-600 hover:text-red-800 p-1"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
+        <p className="text-gray-600 mb-4 text-sm">{product.description.substring(0, 100)}...</p>
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            {(product.business_type === 'sale' || product.business_type === 'both') && currentView !== 'rentals' && (
+              <p className="text-lg font-bold text-green-600">Sale: ${product.price}</p>
+            )}
+            {(product.business_type === 'rent' || product.business_type === 'both') && currentView !== 'sales' && (
+              <p className="text-lg font-bold text-yellow-600">Rent: ${product.rent_price}/day</p>
+            )}
+            {currentView === 'home' && product.business_type === 'both' && (
+              <>
+                <p className="text-lg font-bold text-green-600">Sale: ${product.price}</p>
+                <p className="text-lg font-bold text-yellow-600">Rent: ${product.rent_price}/day</p>
+              </>
+            )}
+          </div>
+        </div>
+        {!showActions && (
+          <div className="flex gap-2">
+            {((product.business_type === 'sale' || product.business_type === 'both') && currentView !== 'rentals') && (
+              <button
+                onClick={() => addToCart(product, 'sale')}
+                className="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-sm"
+              >
+                Buy
+              </button>
+            )}
+            {((product.business_type === 'rent' || product.business_type === 'both') && currentView !== 'sales') && (
+              <button
+                onClick={() => addToCart(product, 'rent')}
+                className="flex-1 bg-yellow-600 text-white py-2 px-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold text-sm"
+              >
+                Rent
+              </button>
+            )}
+          </div>
+        )}
+        {showActions && (
+          <div className="text-sm text-gray-500">
+            <p>Stock: {product.stock}</p>
+            <p>Category: {product.category}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  // ============================
+  // LOADING STATE
+  // ============================
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading products...</p>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     );
   }
 
-  // Error state
+  // ============================
+  // ERROR STATE
+  // ============================
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">Error: {error}</p>
           <button 
-            onClick={() => window.location.reload()} 
+            onClick={() => setError('')} 
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
           >
             Retry
@@ -143,6 +542,9 @@ export default function Home() {
     );
   }
 
+  // ============================
+  // MAIN RENDER
+  // ============================
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
@@ -183,8 +585,28 @@ export default function Home() {
               </button>
             </nav>
             
-            {/* Cart Button */}
+            {/* Right Side Actions */}
             <div className="flex items-center space-x-4">
+              {/* Admin Button */}
+              {!isAdmin ? (
+                <button
+                  onClick={() => setShowAdminLogin(true)}
+                  className="text-gray-600 hover:text-blue-600 p-2 rounded-full hover:bg-gray-100 transition-colors"
+                  title="Admin Login"
+                >
+                  <Settings className="w-6 h-6" />
+                </button>
+              ) : (
+                <button
+                  onClick={handleAdminLogout}
+                  className="text-red-600 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors"
+                  title="Logout"
+                >
+                  <LogOut className="w-6 h-6" />
+                </button>
+              )}
+
+              {/* Cart Button */}
               <button
                 onClick={() => setShowCart(true)}
                 className="relative bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
@@ -206,13 +628,144 @@ export default function Home() {
               </button>
             </div>
           </div>
+
+          {/* Admin Navigation */}
+          {isAdmin && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="flex justify-center space-x-6">
+                <button
+                  onClick={() => setAdminView('products')}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    adminView === 'products' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                  }`}
+                >
+                  <Package className="w-5 h-5" />
+                  <span>Products</span>
+                </button>
+                <button
+                  onClick={() => setAdminView('orders')}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    adminView === 'orders' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                  }`}
+                >
+                  <ClipboardList className="w-5 h-5" />
+                  <span>Orders ({orders.length})</span>
+                </button>
+                <button
+                  onClick={() => setAdminView('customers')}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    adminView === 'customers' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                  }`}
+                >
+                  <Users className="w-5 h-5" />
+                  <span>Customers ({customers.length})</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Home View */}
-        {currentView === 'home' && (
+        {/* ADMIN VIEWS */}
+        {isAdmin && adminView === 'products' && (
+          <div>
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-800">Product Management</h2>
+              <button
+                onClick={addNewProduct}
+                className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold flex items-center"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Add New Product
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {products.map(product => renderProductCard(product, true))}
+            </div>
+          </div>
+        )}
+
+        {isAdmin && adminView === 'orders' && (
+          <div>
+            <h2 className="text-3xl font-bold text-gray-800 mb-8">Order Management</h2>
+            <div className="space-y-4">
+              {orders.map(order => (
+                <div key={order.id} className="bg-white rounded-xl shadow-lg p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-800">Order #{order.id}</h3>
+                      <p className="text-gray-600">Customer: {order.customer.name}</p>
+                      <p className="text-gray-600">Phone: {order.customer.phone}</p>
+                      <p className="text-gray-600">Address: {order.customer.address}</p>
+                      {order.customer.eventType === 'rent' && (
+                        <p className="text-gray-600">Event Date: {order.customer.rentDate}</p>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-green-600">${order.total}</p>
+                      <select
+                        value={order.status}
+                        onChange={(e) => updateOrderStatus(order.id, e.target.value as any)}
+                        className={`mt-2 px-3 py-1 rounded-full text-sm font-semibold ${
+                          order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                          order.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
+                          order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                          'bg-red-100 text-red-800'
+                        }`}
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="border-t pt-4">
+                    <h4 className="font-semibold mb-2">Items:</h4>
+                    {order.items.map((item, index) => (
+                      <div key={index} className="flex justify-between items-center py-1">
+                        <span>{item.name} ({item.type})</span>
+                        <span>{item.quantity}x ${item.price} = ${item.quantity * item.price}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-500 mt-4">
+                    Created: {new Date(order.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {isAdmin && adminView === 'customers' && (
+          <div>
+            <h2 className="text-3xl font-bold text-gray-800 mb-8">Customer Management</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {customers.map(customer => (
+                <div key={customer.id} className="bg-white rounded-xl shadow-lg p-6">
+                  <h3 className="text-lg font-bold text-gray-800 mb-2">{customer.name}</h3>
+                  <p className="text-gray-600 mb-1">📱 {customer.phone}</p>
+                  <p className="text-gray-600 mb-1">📍 {customer.address}</p>
+                  {customer.email && (
+                    <p className="text-gray-600 mb-3">📧 {customer.email}</p>
+                  )}
+                  <div className="border-t pt-3 mt-3">
+                    <p className="text-sm text-gray-600">Orders: {customer.orders_count}</p>
+                    <p className="text-sm text-gray-600">Total Spent: ${customer.total_spent}</p>
+                    <p className="text-sm text-gray-600">Last Order: {customer.last_order}</p>
+                    <p className="text-sm text-gray-500">Joined: {new Date(customer.created_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* REGULAR VIEWS */}
+        {!isAdmin && currentView === 'home' && (
           <div>
             {/* Hero Section */}
             <section className="text-center mb-12">
@@ -243,124 +796,31 @@ export default function Home() {
             <section>
               <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">Featured Products</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {products.slice(0, 4).map(product => (
-                  <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-                    <div className="h-48 bg-gray-100 flex items-center justify-center">
-                      <img 
-                        src={product.images[0]} 
-                        alt={product.name}
-                        className="max-w-full max-h-full object-contain"
-                      />
-                    </div>
-                    <div className="p-6">
-                      <h4 className="text-lg font-bold text-gray-800 mb-2">{product.name}</h4>
-                      <p className="text-gray-600 mb-4 text-sm">{product.description.substring(0, 100)}...</p>
-                      <div className="flex justify-between items-center mb-4">
-                        <div>
-                          {product.business_type === 'sale' || product.business_type === 'both' ? (
-                            <p className="text-lg font-bold text-green-600">Sale: ${product.price}</p>
-                          ) : null}
-                          {product.business_type === 'rent' || product.business_type === 'both' ? (
-                            <p className="text-lg font-bold text-yellow-600">Rent: ${product.rent_price}/day</p>
-                          ) : null}
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        {(product.business_type === 'sale' || product.business_type === 'both') && (
-                          <button
-                            onClick={() => addToCart(product, 'sale')}
-                            className="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-sm"
-                          >
-                            Buy
-                          </button>
-                        )}
-                        {(product.business_type === 'rent' || product.business_type === 'both') && (
-                          <button
-                            onClick={() => addToCart(product, 'rent')}
-                            className="flex-1 bg-yellow-600 text-white py-2 px-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold text-sm"
-                          >
-                            Rent
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                {products.slice(0, 4).map(product => renderProductCard(product))}
               </div>
             </section>
           </div>
         )}
 
-        {/* Sales View */}
-        {currentView === 'sales' && (
+        {!isAdmin && currentView === 'sales' && (
           <div>
             <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">🛒 Products for Sale</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {saleProducts.map(product => (
-                <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-                  <div className="h-48 bg-gray-100 flex items-center justify-center relative">
-                    <img 
-                      src={product.images[0]} 
-                      alt={product.name}
-                      className="max-w-full max-h-full object-contain"
-                    />
-                    <div className="absolute top-2 right-2 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                      SALE
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h4 className="text-lg font-bold text-gray-800 mb-2">{product.name}</h4>
-                    <p className="text-gray-600 mb-4 text-sm">{product.description.substring(0, 100)}...</p>
-                    <p className="text-xl font-bold text-green-600 mb-4">Price: ${product.price}</p>
-                    <button
-                      onClick={() => addToCart(product, 'sale')}
-                      className="w-full bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
-                    >
-                      Add to Cart - Buy
-                    </button>
-                  </div>
-                </div>
-              ))}
+              {saleProducts.map(product => renderProductCard(product))}
             </div>
           </div>
         )}
 
-        {/* Rentals View */}
-        {currentView === 'rentals' && (
+        {!isAdmin && currentView === 'rentals' && (
           <div>
             <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">🎪 Products for Rent</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {rentProducts.map(product => (
-                <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-                  <div className="h-48 bg-gray-100 flex items-center justify-center relative">
-                    <img 
-                      src={product.images[0]} 
-                      alt={product.name}
-                      className="max-w-full max-h-full object-contain"
-                    />
-                    <div className="absolute top-2 right-2 bg-yellow-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                      RENTAL
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h4 className="text-lg font-bold text-gray-800 mb-2">{product.name}</h4>
-                    <p className="text-gray-600 mb-4 text-sm">{product.description.substring(0, 100)}...</p>
-                    <p className="text-xl font-bold text-yellow-600 mb-4">Rent: ${product.rent_price}/day</p>
-                    <button
-                      onClick={() => addToCart(product, 'rent')}
-                      className="w-full bg-yellow-600 text-white py-2 px-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold"
-                    >
-                      Add to Cart - Rent
-                    </button>
-                  </div>
-                </div>
-              ))}
+              {rentProducts.map(product => renderProductCard(product))}
             </div>
           </div>
         )}
 
-        {/* About View */}
-        {currentView === 'about' && (
+        {!isAdmin && currentView === 'about' && (
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold text-gray-800 mb-8">About Hernandez Jumpers</h2>
             <p className="text-lg text-gray-600 mb-6">
@@ -387,6 +847,187 @@ export default function Home() {
           </div>
         )}
       </main>
+
+      {/* Admin Login Modal */}
+      {showAdminLogin && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-gray-800">Admin Login</h3>
+              <button
+                onClick={() => setShowAdminLogin(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={adminCredentials.email}
+                  onChange={(e) => setAdminCredentials({...adminCredentials, email: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="admin@hernandezjumpers.com"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <div className="relative">
+                  <input
+                    type={showPasswordField ? "text" : "password"}
+                    value={adminCredentials.password}
+                    onChange={(e) => setAdminCredentials({...adminCredentials, password: e.target.value})}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordField(!showPasswordField)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPasswordField ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+              
+              <button
+                onClick={handleAdminLogin}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+              >
+                Login
+              </button>
+            </div>
+            
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+              <p><strong>Demo Credentials:</strong></p>
+              <p>Email: admin@hernandezjumpers.com</p>
+              <p>Password: admin123</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Product Form Modal */}
+      {showProductForm && editingProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-gray-800">
+                {products.find(p => p.id === editingProduct.id) ? 'Edit Product' : 'Add New Product'}
+              </h3>
+              <button
+                onClick={() => setShowProductForm(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <input
+                    type="text"
+                    value={editingProduct.name}
+                    onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                  <select
+                    value={editingProduct.category}
+                    onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="chairs">Chairs</option>
+                    <option value="tables">Tables</option>
+                    <option value="bounce_houses">Bounce Houses</option>
+                    <option value="accessories">Accessories</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea
+                  value={editingProduct.description}
+                  onChange={(e) => setEditingProduct({...editingProduct, description: e.target.value})}
+                  rows={3}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Sale Price</label>
+                  <input
+                    type="number"
+                    value={editingProduct.price}
+                    onChange={(e) => setEditingProduct({...editingProduct, price: Number(e.target.value)})}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Rent Price</label>
+                  <input
+                    type="number"
+                    value={editingProduct.rent_price}
+                    onChange={(e) => setEditingProduct({...editingProduct, rent_price: Number(e.target.value)})}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Stock</label>
+                  <input
+                    type="number"
+                    value={editingProduct.stock}
+                    onChange={(e) => setEditingProduct({...editingProduct, stock: Number(e.target.value)})}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Business Type</label>
+                <select
+                  value={editingProduct.business_type}
+                  onChange={(e) => setEditingProduct({...editingProduct, business_type: e.target.value as 'sale' | 'rent' | 'both'})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="sale">Sale Only</option>
+                  <option value="rent">Rent Only</option>
+                  <option value="both">Sale & Rent</option>
+                </select>
+              </div>
+              
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={() => setShowProductForm(false)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={saveProduct}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Product
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Cart Modal */}
       {showCart && (
@@ -528,6 +1169,7 @@ export default function Home() {
                       {customerData.eventType === 'rent' && (
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <Calendar className="w-4 h-4 inline mr-1" />
                             Event Date *
                           </label>
                           <input
