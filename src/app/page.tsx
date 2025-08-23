@@ -1,5 +1,72 @@
-'use client';
+// ============================
+  // PERSISTENCE FUNCTIONS
+  // ============================
+  const saveToStorage = (key: string, data: any) => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(key, JSON.stringify(data));
+      } catch (error) {
+        console.error('Error saving to storage:', error);
+      }
+    }
+  };
 
+  const loadFromStorage = (key: string, defaultValue: any) => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : defaultValue;
+      } catch (error) {
+        console.error('Error loading from storage:', error);
+        return defaultValue;
+      }
+    }
+    return defaultValue;
+  };
+
+  // ============================
+  // LOAD DATA ON COMPONENT MOUNT
+  // ============================
+  useEffect(() => {
+    setProducts(loadFromStorage('hernandez_products', initialProducts));
+    setOrders(loadFromStorage('hernandez_orders', initialOrders));
+    setCustomers(loadFromStorage('hernandez_customers', initialCustomers));
+  }, []);
+
+  // ============================
+  // SAVE DATA WHEN CHANGES
+  // ============================
+  useEffect(() => {
+    saveToStorage('hernandez_products', products);
+  }, [products]);
+
+  useEffect(() => {
+    saveToStorage('hernandez_orders', orders);
+  }, [orders]);
+
+  useEffect(() => {
+    saveToStorage('hernandez_customers', customers);
+  }, [customers]);
+  const addImageToProduct = () => {
+    if (editingProduct && newImageUrl.trim()) {
+      setEditingProduct({
+        ...editingProduct,
+        images: [...editingProduct.images, newImageUrl.trim()]
+      });
+      setNewImageUrl('');
+    }
+  };
+
+  const removeImageFromProduct = (index: number) => {
+    if (editingProduct) {
+      const newImages = editingProduct.images.filter((_, i) => i !== index);
+      setEditingProduct({
+        ...editingProduct,
+        images: newImages.length > 0 ? newImages : ['/images/sales/banners-frozen-cars.jpg']
+      });
+    }
+  };'use client'
+'use client';
 import { useState, useEffect } from 'react';
 import { ShoppingCart, Plus, Minus, User, Phone, MapPin, X, Menu, Settings, Eye, EyeOff, Package, Users, ClipboardList, LogOut, Edit, Trash2, Save, Calendar } from 'lucide-react';
 
@@ -58,6 +125,7 @@ export interface Customer {
 // ============================
 // SAMPLE DATA
 // ============================
+// Real products from db.json
 const initialProducts: Product[] = [
   {
     id: 1,
@@ -355,10 +423,10 @@ export default function Home() {
   // ============================
   // STATE - DATA
   // ============================
-  const [products, setProducts] = useState<Product[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Start with loading true
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [orders, setOrders] = useState<Order[]>(initialOrders);
+  const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
   // ============================
@@ -367,57 +435,24 @@ export default function Home() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [showProductForm, setShowProductForm] = useState<boolean>(false);
   const [newImageUrl, setNewImageUrl] = useState<string>('');
+  const [currentImageIndex, setCurrentImageIndex] = useState<Record<number, number>>({});
 
   // ============================
-  // PERSISTENCE FUNCTIONS
+  // IMAGE NAVIGATION FUNCTIONS
   // ============================
-  const saveToStorage = (key: string, data: any) => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(key, JSON.stringify(data));
-      } catch (error) {
-        console.error('Error saving to storage:', error);
-      }
-    }
+  const nextImage = (productId: number, imageCount: number) => {
+    setCurrentImageIndex(prev => ({
+      ...prev,
+      [productId]: ((prev[productId] || 0) + 1) % imageCount
+    }));
   };
 
-  const loadFromStorage = (key: string, defaultValue: any) => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem(key);
-        return stored ? JSON.parse(stored) : defaultValue;
-      } catch (error) {
-        console.error('Error loading from storage:', error);
-        return defaultValue;
-      }
-    }
-    return defaultValue;
+  const prevImage = (productId: number, imageCount: number) => {
+    setCurrentImageIndex(prev => ({
+      ...prev,
+      [productId]: ((prev[productId] || 0) - 1 + imageCount) % imageCount
+    }));
   };
-
-  // ============================
-  // LOAD DATA ON COMPONENT MOUNT
-  // ============================
-  useEffect(() => {
-    setProducts(loadFromStorage('hernandez_products', initialProducts));
-    setOrders(loadFromStorage('hernandez_orders', initialOrders));
-    setCustomers(loadFromStorage('hernandez_customers', initialCustomers));
-    setLoading(false); // Set loading to false after data is loaded
-  }, []);
-
-  // ============================
-  // SAVE DATA WHEN CHANGES
-  // ============================
-  useEffect(() => {
-    if(!loading) saveToStorage('hernandez_products', products);
-  }, [products, loading]);
-
-  useEffect(() => {
-    if(!loading) saveToStorage('hernandez_orders', orders);
-  }, [orders, loading]);
-
-  useEffect(() => {
-    if(!loading) saveToStorage('hernandez_customers', customers);
-  }, [customers, loading]);
 
   // ============================
   // ADMIN FUNCTIONS
@@ -496,26 +531,6 @@ export default function Home() {
   const editProduct = (product: Product) => {
     setEditingProduct(product);
     setShowProductForm(true);
-  };
-  
-  const addImageToProduct = () => {
-    if (editingProduct && newImageUrl.trim()) {
-      setEditingProduct({
-        ...editingProduct,
-        images: [...editingProduct.images, newImageUrl.trim()]
-      });
-      setNewImageUrl('');
-    }
-  };
-
-  const removeImageFromProduct = (index: number) => {
-    if (editingProduct) {
-      const newImages = editingProduct.images.filter((_, i) => i !== index);
-      setEditingProduct({
-        ...editingProduct,
-        images: newImages.length > 0 ? newImages : ['/images/sales/banners-frozen-cars.jpg']
-      });
-    }
   };
 
   // ============================
@@ -668,91 +683,144 @@ export default function Home() {
   // ============================
   // RENDER FUNCTIONS
   // ============================
-  const renderProductCard = (product: Product, showActions: boolean = false) => (
-    <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-      <div className="h-48 bg-gray-100 flex items-center justify-center relative">
-        <img 
-          src={product.images[0]} 
-          alt={product.name}
-          className="max-w-full max-h-full object-contain"
-        />
-        {currentView === 'sales' && (
-          <div className="absolute top-2 right-2 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
-            SALE
-          </div>
-        )}
-        {currentView === 'rentals' && (
-          <div className="absolute top-2 right-2 bg-yellow-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
-            RENTAL
-          </div>
-        )}
-      </div>
-      <div className="p-6">
-        <div className="flex justify-between items-start mb-2">
-          <h4 className="text-lg font-bold text-gray-800">{product.name}</h4>
-          {showActions && (
-            <div className="flex space-x-1">
+  const renderProductCard = (product: Product, showActions: boolean = false) => {
+    const currentIndex = currentImageIndex[product.id] || 0;
+    const hasMultipleImages = product.images.length > 1;
+    
+    return (
+      <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+        <div className="h-48 bg-gray-100 flex items-center justify-center relative">
+          <img 
+            src={product.images[currentIndex]} 
+            alt={product.name}
+            className="max-w-full max-h-full object-contain"
+          />
+          
+          {/* Image Navigation Arrows */}
+          {hasMultipleImages && (
+            <>
               <button
-                onClick={() => editProduct(product)}
-                className="text-blue-600 hover:text-blue-800 p-1"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevImage(product.id, product.images.length);
+                }}
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-1 rounded-full hover:bg-opacity-70 transition-opacity"
               >
-                <Edit className="w-4 h-4" />
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
               </button>
               <button
-                onClick={() => deleteProduct(product.id)}
-                className="text-red-600 hover:text-red-800 p-1"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextImage(product.id, product.images.length);
+                }}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-1 rounded-full hover:bg-opacity-70 transition-opacity"
               >
-                <Trash2 className="w-4 h-4" />
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </button>
+              
+              {/* Image Indicators */}
+              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                {product.images.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentImageIndex(prev => ({ ...prev, [product.id]: index }));
+                    }}
+                    className={`w-2 h-2 rounded-full transition-colors ${
+                      index === currentIndex ? 'bg-white' : 'bg-gray-400'
+                    }`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          
+          {currentView === 'sales' && (
+            <div className="absolute top-2 right-2 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
+              SALE
+            </div>
+          )}
+          {currentView === 'rentals' && (
+            <div className="absolute top-2 right-2 bg-yellow-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
+              RENTAL
             </div>
           )}
         </div>
-        <p className="text-gray-600 mb-4 text-sm">{product.description.substring(0, 100)}...</p>
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            {(product.business_type === 'sale' || product.business_type === 'both') && currentView !== 'rentals' && (
-              <p className="text-lg font-bold text-green-600">Sale: ${product.price}</p>
+        <div className="p-6">
+          <div className="flex justify-between items-start mb-2">
+            <h4 className="text-lg font-bold text-gray-800">{product.name}</h4>
+            {showActions && (
+              <div className="flex space-x-1">
+                <button
+                  onClick={() => editProduct(product)}
+                  className="text-blue-600 hover:text-blue-800 p-1"
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => deleteProduct(product.id)}
+                  className="text-red-600 hover:text-red-800 p-1"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             )}
-            {(product.business_type === 'rent' || product.business_type === 'both') && currentView !== 'sales' && (
-              <p className="text-lg font-bold text-yellow-600">Rent: ${product.rent_price}/day</p>
-            )}
-            {currentView === 'home' && product.business_type === 'both' && (
-              <>
+          </div>
+          <p className="text-gray-600 mb-4 text-sm">{product.description.substring(0, 100)}...</p>
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              {(product.business_type === 'sale' || product.business_type === 'both') && currentView !== 'rentals' && (
                 <p className="text-lg font-bold text-green-600">Sale: ${product.price}</p>
+              )}
+              {(product.business_type === 'rent' || product.business_type === 'both') && currentView !== 'sales' && (
                 <p className="text-lg font-bold text-yellow-600">Rent: ${product.rent_price}/day</p>
-              </>
-            )}
+              )}
+              {currentView === 'home' && product.business_type === 'both' && (
+                <>
+                  <p className="text-lg font-bold text-green-600">Sale: ${product.price}</p>
+                  <p className="text-lg font-bold text-yellow-600">Rent: ${product.rent_price}/day</p>
+                </>
+              )}
+            </div>
           </div>
+          {!showActions && (
+            <div className="flex gap-2">
+              {((product.business_type === 'sale' || product.business_type === 'both') && currentView !== 'rentals') && (
+                <button
+                  onClick={() => addToCart(product, 'sale')}
+                  className="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-sm"
+                >
+                  Buy
+                </button>
+              )}
+              {((product.business_type === 'rent' || product.business_type === 'both') && currentView !== 'sales') && (
+                <button
+                  onClick={() => addToCart(product, 'rent')}
+                  className="flex-1 bg-yellow-600 text-white py-2 px-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold text-sm"
+                >
+                  Rent
+                </button>
+              )}
+            </div>
+          )}
+          {showActions && (
+            <div className="text-sm text-gray-500">
+              <p>Stock: {product.in_stock}</p>
+              <p>Category: {product.category}</p>
+              {hasMultipleImages && (
+                <p>Images: {product.images.length}</p>
+              )}
+            </div>
+          )}
         </div>
-        {!showActions && (
-          <div className="flex gap-2">
-            {((product.business_type === 'sale' || product.business_type === 'both') && currentView !== 'rentals') && (
-              <button
-                onClick={() => addToCart(product, 'sale')}
-                className="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-sm"
-              >
-                Buy
-              </button>
-            )}
-            {((product.business_type === 'rent' || product.business_type === 'both') && currentView !== 'sales') && (
-              <button
-                onClick={() => addToCart(product, 'rent')}
-                className="flex-1 bg-yellow-600 text-white py-2 px-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold text-sm"
-              >
-                Rent
-              </button>
-            )}
-          </div>
-        )}
-        {showActions && (
-          <div className="text-sm text-gray-500">
-            <p>Stock: {product.in_stock}</p>
-            <p>Category: {product.category}</p>
-          </div>
-        )}
       </div>
-    </div>
-  );
+    );
+  };
 
   // ============================
   // LOADING STATE
@@ -945,6 +1013,18 @@ export default function Home() {
                 <div key={order.id} className="bg-white rounded-xl shadow-lg p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                <input
+                  type="url"
+                  value={editingProduct.images[0] || ''}
+                  onChange={(e) => setEditingProduct({...editingProduct, images: [e.target.value]})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="https://example.com/image.jpg"
+                />
+                <p className="text-xs text-gray-500 mt-1">Paste the URL of your product image</p>
+              </div>
+              
+              <div>
                       <h3 className="text-lg font-bold text-gray-800">Order #{order.id}</h3>
                       <p className="text-gray-600">Customer: {order.customer.name}</p>
                       <p className="text-gray-600">Phone: {order.customer.phone}</p>
@@ -1243,28 +1323,6 @@ export default function Home() {
                   />
                 </div>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                <div className="flex gap-2">
-                  <input
-                    type="url"
-                    value={newImageUrl}
-                    onChange={(e) => setNewImageUrl(e.target.value)}
-                    className="flex-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="https://example.com/image.jpg"
-                  />
-                  <button onClick={addImageToProduct} className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Add</button>
-                </div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {editingProduct.images.map((img, index) => (
-                    <div key={index} className="relative">
-                      <img src={img} alt={`Product image ${index+1}`} className="w-20 h-20 object-cover rounded"/>
-                      <button onClick={() => removeImageFromProduct(index)} className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">&times;</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Business Type</label>
@@ -1509,6 +1567,25 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* WhatsApp Chat Button */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <a
+          href={`https://wa.me/14804381258?text=${encodeURIComponent('Hi! I have a question about your products and services.')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-110 flex items-center justify-center group"
+        >
+          <svg 
+            className="w-6 h-6" 
+            fill="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.787"/>
+          </svg>
+          <span className="ml-2 hidden group-hover:inline-block text-sm font-medium">Chat with us!</span>
+        </a>
+      </div>
     </div>
   );
 }
