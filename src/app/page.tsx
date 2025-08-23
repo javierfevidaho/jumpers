@@ -1,72 +1,5 @@
-// ============================
-  // PERSISTENCE FUNCTIONS
-  // ============================
-  const saveToStorage = (key: string, data: any) => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(key, JSON.stringify(data));
-      } catch (error) {
-        console.error('Error saving to storage:', error);
-      }
-    }
-  };
-
-  const loadFromStorage = (key: string, defaultValue: any) => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem(key);
-        return stored ? JSON.parse(stored) : defaultValue;
-      } catch (error) {
-        console.error('Error loading from storage:', error);
-        return defaultValue;
-      }
-    }
-    return defaultValue;
-  };
-
-  // ============================
-  // LOAD DATA ON COMPONENT MOUNT
-  // ============================
-  useEffect(() => {
-    setProducts(loadFromStorage('hernandez_products', initialProducts));
-    setOrders(loadFromStorage('hernandez_orders', initialOrders));
-    setCustomers(loadFromStorage('hernandez_customers', initialCustomers));
-  }, []);
-
-  // ============================
-  // SAVE DATA WHEN CHANGES
-  // ============================
-  useEffect(() => {
-    saveToStorage('hernandez_products', products);
-  }, [products]);
-
-  useEffect(() => {
-    saveToStorage('hernandez_orders', orders);
-  }, [orders]);
-
-  useEffect(() => {
-    saveToStorage('hernandez_customers', customers);
-  }, [customers]);
-  const addImageToProduct = () => {
-    if (editingProduct && newImageUrl.trim()) {
-      setEditingProduct({
-        ...editingProduct,
-        images: [...editingProduct.images, newImageUrl.trim()]
-      });
-      setNewImageUrl('');
-    }
-  };
-
-  const removeImageFromProduct = (index: number) => {
-    if (editingProduct) {
-      const newImages = editingProduct.images.filter((_, i) => i !== index);
-      setEditingProduct({
-        ...editingProduct,
-        images: newImages.length > 0 ? newImages : ['/images/sales/banners-frozen-cars.jpg']
-      });
-    }
-  };'use client'
 'use client';
+
 import { useState, useEffect } from 'react';
 import { ShoppingCart, Plus, Minus, User, Phone, MapPin, X, Menu, Settings, Eye, EyeOff, Package, Users, ClipboardList, LogOut, Edit, Trash2, Save, Calendar } from 'lucide-react';
 
@@ -125,7 +58,6 @@ export interface Customer {
 // ============================
 // SAMPLE DATA
 // ============================
-// Real products from db.json
 const initialProducts: Product[] = [
   {
     id: 1,
@@ -423,10 +355,10 @@ export default function Home() {
   // ============================
   // STATE - DATA
   // ============================
-  const [products, setProducts] = useState<Product[]>(initialProducts);
-  const [orders, setOrders] = useState<Order[]>(initialOrders);
-  const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // Start with loading true
   const [error, setError] = useState<string>('');
 
   // ============================
@@ -435,6 +367,57 @@ export default function Home() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [showProductForm, setShowProductForm] = useState<boolean>(false);
   const [newImageUrl, setNewImageUrl] = useState<string>('');
+
+  // ============================
+  // PERSISTENCE FUNCTIONS
+  // ============================
+  const saveToStorage = (key: string, data: any) => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(key, JSON.stringify(data));
+      } catch (error) {
+        console.error('Error saving to storage:', error);
+      }
+    }
+  };
+
+  const loadFromStorage = (key: string, defaultValue: any) => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : defaultValue;
+      } catch (error) {
+        console.error('Error loading from storage:', error);
+        return defaultValue;
+      }
+    }
+    return defaultValue;
+  };
+
+  // ============================
+  // LOAD DATA ON COMPONENT MOUNT
+  // ============================
+  useEffect(() => {
+    setProducts(loadFromStorage('hernandez_products', initialProducts));
+    setOrders(loadFromStorage('hernandez_orders', initialOrders));
+    setCustomers(loadFromStorage('hernandez_customers', initialCustomers));
+    setLoading(false); // Set loading to false after data is loaded
+  }, []);
+
+  // ============================
+  // SAVE DATA WHEN CHANGES
+  // ============================
+  useEffect(() => {
+    if(!loading) saveToStorage('hernandez_products', products);
+  }, [products, loading]);
+
+  useEffect(() => {
+    if(!loading) saveToStorage('hernandez_orders', orders);
+  }, [orders, loading]);
+
+  useEffect(() => {
+    if(!loading) saveToStorage('hernandez_customers', customers);
+  }, [customers, loading]);
 
   // ============================
   // ADMIN FUNCTIONS
@@ -513,6 +496,26 @@ export default function Home() {
   const editProduct = (product: Product) => {
     setEditingProduct(product);
     setShowProductForm(true);
+  };
+  
+  const addImageToProduct = () => {
+    if (editingProduct && newImageUrl.trim()) {
+      setEditingProduct({
+        ...editingProduct,
+        images: [...editingProduct.images, newImageUrl.trim()]
+      });
+      setNewImageUrl('');
+    }
+  };
+
+  const removeImageFromProduct = (index: number) => {
+    if (editingProduct) {
+      const newImages = editingProduct.images.filter((_, i) => i !== index);
+      setEditingProduct({
+        ...editingProduct,
+        images: newImages.length > 0 ? newImages : ['/images/sales/banners-frozen-cars.jpg']
+      });
+    }
   };
 
   // ============================
@@ -942,18 +945,6 @@ export default function Home() {
                 <div key={order.id} className="bg-white rounded-xl shadow-lg p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                <input
-                  type="url"
-                  value={editingProduct.images[0] || ''}
-                  onChange={(e) => setEditingProduct({...editingProduct, images: [e.target.value]})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="https://example.com/image.jpg"
-                />
-                <p className="text-xs text-gray-500 mt-1">Paste the URL of your product image</p>
-              </div>
-              
-              <div>
                       <h3 className="text-lg font-bold text-gray-800">Order #{order.id}</h3>
                       <p className="text-gray-600">Customer: {order.customer.name}</p>
                       <p className="text-gray-600">Phone: {order.customer.phone}</p>
@@ -1250,6 +1241,28 @@ export default function Home() {
                     onChange={(e) => setEditingProduct({...editingProduct, in_stock: Number(e.target.value)})}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    value={newImageUrl}
+                    onChange={(e) => setNewImageUrl(e.target.value)}
+                    className="flex-1 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                  <button onClick={addImageToProduct} className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Add</button>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {editingProduct.images.map((img, index) => (
+                    <div key={index} className="relative">
+                      <img src={img} alt={`Product image ${index+1}`} className="w-20 h-20 object-cover rounded"/>
+                      <button onClick={() => removeImageFromProduct(index)} className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">&times;</button>
+                    </div>
+                  ))}
                 </div>
               </div>
               
