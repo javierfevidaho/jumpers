@@ -1,6 +1,52 @@
 // ============================
-  // IMAGE FUNCTIONS
+  // PERSISTENCE FUNCTIONS
   // ============================
+  const saveToStorage = (key: string, data: any) => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(key, JSON.stringify(data));
+      } catch (error) {
+        console.error('Error saving to storage:', error);
+      }
+    }
+  };
+
+  const loadFromStorage = (key: string, defaultValue: any) => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : defaultValue;
+      } catch (error) {
+        console.error('Error loading from storage:', error);
+        return defaultValue;
+      }
+    }
+    return defaultValue;
+  };
+
+  // ============================
+  // LOAD DATA ON COMPONENT MOUNT
+  // ============================
+  useEffect(() => {
+    setProducts(loadFromStorage('hernandez_products', initialProducts));
+    setOrders(loadFromStorage('hernandez_orders', initialOrders));
+    setCustomers(loadFromStorage('hernandez_customers', initialCustomers));
+  }, []);
+
+  // ============================
+  // SAVE DATA WHEN CHANGES
+  // ============================
+  useEffect(() => {
+    saveToStorage('hernandez_products', products);
+  }, [products]);
+
+  useEffect(() => {
+    saveToStorage('hernandez_orders', orders);
+  }, [orders]);
+
+  useEffect(() => {
+    saveToStorage('hernandez_customers', customers);
+  }, [customers]);
   const addImageToProduct = () => {
     if (editingProduct && newImageUrl.trim()) {
       setEditingProduct({
@@ -21,7 +67,7 @@
     }
   };'use client'
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ShoppingCart, Plus, Minus, User, Phone, MapPin, X, Menu, Settings, Eye, EyeOff, Package, Users, ClipboardList, LogOut, Edit, Trash2, Save, Calendar } from 'lucide-react';
 
 // ============================
@@ -533,6 +579,36 @@ export default function Home() {
     };
     
     setOrders([...orders, newOrder]);
+
+    // Add or update customer
+    const existingCustomer = customers.find(c => c.phone === customerData.phone);
+    if (existingCustomer) {
+      setCustomers(customers.map(c => 
+        c.phone === customerData.phone 
+          ? {
+              ...c,
+              name: customerData.name,
+              address: customerData.address,
+              orders_count: c.orders_count + 1,
+              total_spent: c.total_spent + total,
+              last_order: new Date().toISOString().split('T')[0]
+            }
+          : c
+      ));
+    } else {
+      const newCustomer: Customer = {
+        id: `CUST${Date.now()}`,
+        name: customerData.name,
+        phone: customerData.phone,
+        address: customerData.address,
+        email: '',
+        orders_count: 1,
+        total_spent: total,
+        last_order: new Date().toISOString().split('T')[0],
+        created_at: new Date().toISOString()
+      };
+      setCustomers([...customers, newCustomer]);
+    }
     
     // Create WhatsApp message
     let message = `🎉 NEW ORDER - HERNANDEZ JUMPERS\n\n`;
@@ -549,11 +625,11 @@ export default function Home() {
     cart.forEach(item => {
       message += `• ${item.name}\n`;
       message += `  Quantity: ${item.quantity}\n`;
-      message += `  Price: $${item.price} ${item.type === 'rent' ? 'per day' : 'each'}\n`;
-      message += `  Subtotal: $${item.price * item.quantity}\n\n`;
+      message += `  Price: ${item.price} ${item.type === 'rent' ? 'per day' : 'each'}\n`;
+      message += `  Subtotal: ${item.price * item.quantity}\n\n`;
     });
     
-    message += `💰 TOTAL: $${total}\n\n`;
+    message += `💰 TOTAL: ${total}\n\n`;
     message += `📞 Contact to confirm details and coordinate delivery.`;
 
     const whatsappNumber = '9862269662';
@@ -840,8 +916,8 @@ export default function Home() {
             <div className="flex justify-between items-center mb-8">
               <div>
                 <h2 className="text-3xl font-bold text-gray-800">Product Management</h2>
-                <p className="text-sm text-amber-600 mt-1">
-                  ⚠️ Note: Changes are stored temporarily in this session. For permanent storage, a database connection is needed.
+                <p className="text-sm text-green-600 mt-1">
+                  ✅ Changes are saved automatically and persist between sessions
                 </p>
               </div>
               <button
