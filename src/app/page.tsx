@@ -66,7 +66,7 @@
       });
     }
   };'use client'
-'use client'
+'use client';
 import { useState, useEffect } from 'react';
 import { ShoppingCart, Plus, Minus, User, Phone, MapPin, X, Menu, Settings, Eye, EyeOff, Package, Users, ClipboardList, LogOut, Edit, Trash2, Save, Calendar } from 'lucide-react';
 
