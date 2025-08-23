@@ -1,4 +1,25 @@
-'use client'
+// ============================
+  // IMAGE FUNCTIONS
+  // ============================
+  const addImageToProduct = () => {
+    if (editingProduct && newImageUrl.trim()) {
+      setEditingProduct({
+        ...editingProduct,
+        images: [...editingProduct.images, newImageUrl.trim()]
+      });
+      setNewImageUrl('');
+    }
+  };
+
+  const removeImageFromProduct = (index: number) => {
+    if (editingProduct) {
+      const newImages = editingProduct.images.filter((_, i) => i !== index);
+      setEditingProduct({
+        ...editingProduct,
+        images: newImages.length > 0 ? newImages : ['/images/sales/banners-frozen-cars.jpg']
+      });
+    }
+  };'use client'
 'use client'
 import { useState } from 'react';
 import { ShoppingCart, Plus, Minus, User, Phone, MapPin, X, Menu, Settings, Eye, EyeOff, Package, Users, ClipboardList, LogOut, Edit, Trash2, Save, Calendar } from 'lucide-react';
@@ -363,10 +384,11 @@ export default function Home() {
   const [error, setError] = useState<string>('');
 
   // ============================
-  // STATE - PRODUCT EDITING
+  // STATE - PRODUCT EDITING  
   // ============================
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [showProductForm, setShowProductForm] = useState<boolean>(false);
+  const [newImageUrl, setNewImageUrl] = useState<string>('');
 
   // ============================
   // ADMIN FUNCTIONS
@@ -409,9 +431,15 @@ export default function Home() {
 
   const saveProduct = () => {
     if (editingProduct) {
+      if (!editingProduct.name.trim() || editingProduct.price < 0) {
+        alert('Please enter a valid product name and price');
+        return;
+      }
+
       const productToSave = {
         ...editingProduct,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
+        images: editingProduct.images.length > 0 ? editingProduct.images : ['/images/sales/banners-frozen-cars.jpg']
       };
       
       const existingIndex = products.findIndex(p => p.id === editingProduct.id);
@@ -419,11 +447,14 @@ export default function Home() {
         const updatedProducts = [...products];
         updatedProducts[existingIndex] = productToSave;
         setProducts(updatedProducts);
+        alert(`Product "${productToSave.name}" updated successfully!`);
       } else {
         setProducts([...products, productToSave]);
+        alert(`Product "${productToSave.name}" created successfully!`);
       }
       setEditingProduct(null);
       setShowProductForm(false);
+      setNewImageUrl('');
     }
   };
 
@@ -807,7 +838,12 @@ export default function Home() {
         {isAdmin && adminView === 'products' && (
           <div>
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-800">Product Management</h2>
+              <div>
+                <h2 className="text-3xl font-bold text-gray-800">Product Management</h2>
+                <p className="text-sm text-amber-600 mt-1">
+                  ⚠️ Note: Changes are stored temporarily in this session. For permanent storage, a database connection is needed.
+                </p>
+              </div>
               <button
                 onClick={addNewProduct}
                 className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold flex items-center"
@@ -1061,7 +1097,11 @@ export default function Home() {
                 {products.find(p => p.id === editingProduct.id) ? 'Edit Product' : 'Add New Product'}
               </h3>
               <button
-                onClick={() => setShowProductForm(false)}
+                onClick={() => {
+                  setShowProductForm(false);
+                  setEditingProduct(null);
+                  setNewImageUrl('');
+                }}
                 className="text-gray-500 hover:text-gray-700"
               >
                 <X className="w-6 h-6" />
@@ -1152,7 +1192,11 @@ export default function Home() {
               
               <div className="flex justify-end space-x-3">
                 <button
-                  onClick={() => setShowProductForm(false)}
+                  onClick={() => {
+                    setShowProductForm(false);
+                    setEditingProduct(null);
+                    setNewImageUrl('');
+                  }}
                   className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
                 >
                   Cancel
