@@ -15,8 +15,9 @@ export interface Product {
   images: string[];
   business_type: 'sale' | 'rent' | 'both';
   category: string;
-  stock: number;
+  in_stock: number;
   created_at: string;
+  updated_at?: string;
 }
 
 export interface CartItem extends Product {
@@ -57,139 +58,266 @@ export interface Customer {
 // ============================
 // SAMPLE DATA
 // ============================
+// Real products from db.json
 const initialProducts: Product[] = [
   {
     id: 1,
-    name: "Duramax Plastic Chairs",
-    description: "Industrial quality plastic chairs perfect for events. Stackable, durable and weather resistant. Available in white and other colors.",
-    price: 15,
-    rent_price: 1,
-    images: ["https://images.unsplash.com/photo-1549497538-303791108f95?w=300&h=200&fit=crop"],
-    business_type: "both",
-    category: "chairs",
-    stock: 100,
-    created_at: "2024-01-15T10:00:00Z"
+    name: "New 13x13 Bounce House - FOR SALE",
+    description: "Brand new 13x13 bounce house for sale. Includes blower, repair kit, and 2-year warranty on seams. Perfect for starting your rental business.",
+    price: 1300,
+    rent_price: 0,
+    category: "jumpers",
+    business_type: "sale",
+    in_stock: 3,
+    images: [
+      "/images/sales/brinca-brinca-13x13.jpg",
+      "/images/sales/brinca-brinca-13x13-2.jpg"
+    ],
+    created_at: "2024-01-15T10:00:00Z",
+    updated_at: "2024-01-15T10:00:00Z"
   },
   {
     id: 2,
-    name: "Rectangular Tables 8ft",
-    description: "8-foot rectangular tables ideal for parties and events. Heavy duty construction, easy to clean surface.",
-    price: 120,
-    rent_price: 8,
-    images: ["https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=300&h=200&fit=crop"],
+    name: "16ft High Water Slide",
+    description: "16ft high water slide with new design, motor included, 2-year warranty on seams",
+    price: 2400,
+    rent_price: 300,
+    category: "jumpers",
     business_type: "both",
-    category: "tables",
-    stock: 25,
-    created_at: "2024-01-15T10:00:00Z"
+    in_stock: 3,
+    images: [
+      "/images/sales/water-slide-16ft.jpg",
+      "/images/sales/water-slide-16ft-2.jpg"
+    ],
+    created_at: "2024-01-15T10:05:00Z",
+    updated_at: "2024-01-15T10:05:00Z"
   },
   {
     id: 3,
-    name: "Bounce House Castle",
-    description: "Large castle bounce house perfect for kids parties. Safe, clean and with 2-year seam warranty. Professional installation included.",
-    price: 2500,
-    rent_price: 150,
-    images: ["https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=300&h=200&fit=crop"],
+    name: "Duramax Chairs (Box of 8 units)",
+    description: "Box of 8 Duramax chairs. Available in white, black and beige. $13 each chair",
+    price: 104,
+    rent_price: 20,
+    category: "sillas",
     business_type: "both",
-    category: "bounce_houses",
-    stock: 5,
-    created_at: "2024-01-15T10:00:00Z"
+    in_stock: 25,
+    images: [
+      "/images/sales/sillas-duramax-blancas.jpg",
+      "/images/sales/sillas-duramax-negras.jpg",
+      "/images/sales/sillas-duramax-beige.jpg"
+    ],
+    created_at: "2024-01-15T10:10:00Z",
+    updated_at: "2024-01-15T10:10:00Z"
   },
   {
     id: 4,
-    name: "Round Tables 60in",
-    description: "60-inch round tables perfect for elegant events. Seats 8-10 people comfortably.",
-    price: 100,
-    rent_price: 7,
-    images: ["https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop"],
+    name: "Duramax Pro 6ft Rectangular Table",
+    description: "Duramax Pro industrial quality 6ft rectangular table. Available folding and non-folding",
+    price: 60,
+    rent_price: 15,
+    category: "mesas",
     business_type: "both",
-    category: "tables",
-    stock: 15,
-    created_at: "2024-01-15T10:00:00Z"
+    in_stock: 20,
+    images: [
+      "/images/sales/mesa-rectangular-6ft.jpg",
+      "/images/sales/mesa-rectangular-6ft-folded.jpg",
+      "/images/sales/mesa-rectangular-setup.jpg"
+    ],
+    created_at: "2024-01-15T10:15:00Z",
+    updated_at: "2024-01-15T10:15:00Z"
   },
   {
     id: 5,
-    name: "Chiavari Chairs Gold",
-    description: "Elegant gold chiavari chairs for weddings and formal events. Lightweight yet durable.",
-    price: 45,
-    rent_price: 3,
-    images: ["https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=300&h=200&fit=crop"],
+    name: "60-Inch Round Table",
+    description: "60-inch round table Duramax, perfect for large events",
+    price: 120,
+    rent_price: 25,
+    category: "mesas",
     business_type: "both",
-    category: "chairs",
-    stock: 80,
-    created_at: "2024-01-15T10:00:00Z"
+    in_stock: 15,
+    images: [
+      "/images/sales/mesa-redonda-60.jpg",
+      "/images/sales/mesa-redonda-60-setup.jpg",
+      "/images/sales/mesa-redonda-60-event.jpg"
+    ],
+    created_at: "2024-01-15T10:20:00Z",
+    updated_at: "2024-01-15T10:20:00Z"
   },
   {
     id: 6,
-    name: "Princess Bounce House",
-    description: "Pink princess themed bounce house with slide. Perfect for little princesses' birthday parties.",
-    price: 2800,
-    rent_price: 175,
-    images: ["https://images.unsplash.com/photo-1527853787696-f7be74f2e39a?w=300&h=200&fit=crop"],
+    name: "Duramax Kids Chairs",
+    description: "Duramax brand kids chairs. Available in white, pink, blue and yellow",
+    price: 12,
+    rent_price: 3,
+    category: "sillas",
     business_type: "both",
-    category: "bounce_houses",
-    stock: 3,
-    created_at: "2024-01-15T10:00:00Z"
+    in_stock: 40,
+    images: [
+      "/images/sales/sillas-ninos-colores.jpg",
+      "/images/sales/sillas-ninos-blancas.jpg",
+      "/images/sales/sillas-ninos-azules.jpg",
+      "/images/sales/sillas-ninos-rosas.jpg",
+      "/images/sales/sillas-ninos-amarillas.jpg"
+    ],
+    created_at: "2024-01-15T10:25:00Z",
+    updated_at: "2024-01-15T10:25:00Z"
+  },
+  {
+    id: 10,
+    name: "Bounce House Banners (Pair)",
+    description: "Pair of decorative banners. Designs: Frozen, Lilo & Stitch, Princesses, Cars, Spiderman, Toy Story, Minecraft",
+    price: 100,
+    rent_price: 25,
+    category: "accesorios",
+    business_type: "both",
+    in_stock: 15,
+    images: [
+      "/images/sales/banners-frozen-cars.jpg",
+      "/images/sales/banners-frozen-cars-2.jpg",
+      "/images/sales/banners-princesas.jpg",
+      "/images/sales/banners-spiderman.jpg",
+      "/images/sales/banners-spiderman-2.jpg"
+    ],
+    created_at: "2024-01-15T10:45:00Z",
+    updated_at: "2024-01-15T10:45:00Z"
+  },
+  {
+    id: 101,
+    name: "16ft double-slide water slide",
+    description: "Double the fun with our 16ft inflatable water slide! Perfect for parties and events, safe, durable, and ideal for hours of wet and wild entertainment.",
+    price: 0,
+    rent_price: 250,
+    category: "jumpers",
+    business_type: "rent",
+    in_stock: 8,
+    images: [
+      "/images/rents/16ft-double-slide-water.jpg",
+      "/images/rents/16ft-double-slide-water-2.jpg"
+    ],
+    created_at: "2024-01-15T11:00:00Z",
+    updated_at: "2024-01-15T11:00:00Z"
+  },
+  {
+    id: 103,
+    name: "Boxing ring - comes with 4 gloves",
+    description: "Bring the fun to your party or event with our inflatable boxing ring! Safe, durable, and comes with 4 oversized gloves for exciting matches everyone can enjoy.",
+    price: 0,
+    rent_price: 160,
+    category: "jumpers",
+    business_type: "rent",
+    in_stock: 3,
+    images: [
+      "/images/rents/Boxing ring.jpg",
+      "/images/rents/Boxing ring-2.jpg",
+      "/images/rents/Boxing ring-3.jpg"
+    ],
+    created_at: "2024-01-15T11:10:00Z",
+    updated_at: "2024-01-15T11:10:00Z"
+  },
+  {
+    id: 109,
+    name: "Tables & Chairs Rental",
+    description: "Rent a complete set with 1 table and 6 chairs for just $13! Extra chairs available at $1.50 each — perfect for parties, events, and gatherings.",
+    price: 0,
+    rent_price: 13,
+    category: "mesas",
+    business_type: "rent",
+    in_stock: 25,
+    images: [
+      "/images/rents/Tables-chairs.jpg",
+      "/images/rents/Tables-chairs-2.jpg",
+      "/images/rents/Tables-chairs-3.jpg"
+    ],
+    created_at: "2024-01-15T11:40:00Z",
+    updated_at: "2024-01-15T11:40:00Z"
   }
 ];
 
 const initialOrders: Order[] = [
   {
-    id: "ORD001",
+    id: "1",
     customer: {
       name: "Maria Rodriguez",
       phone: "(480) 555-0123",
-      address: "1234 Main St, Phoenix, AZ",
-      rentDate: "2024-02-15",
+      address: "123 Main St, Phoenix, AZ 85001",
+      rentDate: "2024-12-15",
       eventType: "rent"
     },
     items: [
-      { ...initialProducts[0], quantity: 20, type: "rent" },
-      { ...initialProducts[1], quantity: 3, type: "rent" }
+      { 
+        id: 101,
+        name: "16ft double-slide water slide",
+        description: "Double the fun with our 16ft inflatable water slide!",
+        price: 250,
+        rent_price: 250,
+        images: ["/images/rents/16ft-double-slide-water.jpg"],
+        business_type: "rent",
+        category: "jumpers",
+        in_stock: 8,
+        created_at: "2024-01-15T11:00:00Z",
+        quantity: 1, 
+        type: "rent" 
+      }
     ],
-    total: 44,
+    total: 250,
     status: "confirmed",
-    created_at: "2024-02-01T10:30:00Z",
-    notes: "Birthday party for 50 guests"
+    created_at: "2024-08-20T10:30:00Z",
+    notes: "Delivery at 8:00 AM, pickup at 6:00 PM"
   },
   {
-    id: "ORD002",
+    id: "2",
     customer: {
       name: "John Smith",
       phone: "(623) 555-0456",
-      address: "5678 Oak Ave, Phoenix, AZ",
+      address: "456 Oak Ave, Scottsdale, AZ 85251",
       rentDate: "",
       eventType: "sale"
     },
     items: [
-      { ...initialProducts[0], quantity: 10, type: "sale" }
+      { 
+        id: 3,
+        name: "Duramax Chairs (Box of 8 units)",
+        description: "Box of 8 Duramax chairs. Available in white, black and beige.",
+        price: 104,
+        rent_price: 20,
+        images: ["/images/sales/sillas-duramax-blancas.jpg"],
+        business_type: "both",
+        category: "sillas",
+        in_stock: 25,
+        created_at: "2024-01-15T10:10:00Z",
+        quantity: 2, 
+        type: "sale" 
+      }
     ],
-    total: 150,
+    total: 208,
     status: "pending",
-    created_at: "2024-02-02T14:15:00Z"
+    created_at: "2024-08-21T14:15:00Z",
+    notes: "Customer will pick up"
   }
 ];
 
 const initialCustomers: Customer[] = [
   {
-    id: "CUST001",
+    id: "1",
     name: "Maria Rodriguez",
     phone: "(480) 555-0123",
-    address: "1234 Main St, Phoenix, AZ",
-    email: "maria.rodriguez@email.com",
+    address: "123 Main St, Phoenix, AZ 85001",
+    email: "maria@email.com",
     orders_count: 3,
-    total_spent: 245,
-    last_order: "2024-02-01",
-    created_at: "2023-12-15T09:00:00Z"
+    total_spent: 276,
+    last_order: "2024-08-15",
+    created_at: "2024-01-15T09:00:00Z"
   },
   {
-    id: "CUST002",
+    id: "2",
     name: "John Smith",
     phone: "(623) 555-0456",
-    address: "5678 Oak Ave, Phoenix, AZ",
+    address: "456 Oak Ave, Scottsdale, AZ 85251",
+    email: "john.smith@email.com",
     orders_count: 1,
-    total_spent: 150,
-    last_order: "2024-02-02",
-    created_at: "2024-01-20T11:30:00Z"
+    total_spent: 208,
+    last_order: "2024-08-21",
+    created_at: "2024-08-21T14:00:00Z"
   }
 ];
 
@@ -268,11 +396,12 @@ export default function Home() {
       description: 'Product description',
       price: 0,
       rent_price: 0,
-      images: ['https://images.unsplash.com/photo-1549497538-303791108f95?w=300&h=200&fit=crop'],
+      images: ['/images/sales/banners-frozen-cars.jpg'],
       business_type: 'both',
-      category: 'chairs',
-      stock: 0,
-      created_at: new Date().toISOString()
+      category: 'jumpers',
+      in_stock: 0,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
     setEditingProduct(newProduct);
     setShowProductForm(true);
@@ -280,13 +409,18 @@ export default function Home() {
 
   const saveProduct = () => {
     if (editingProduct) {
+      const productToSave = {
+        ...editingProduct,
+        updated_at: new Date().toISOString()
+      };
+      
       const existingIndex = products.findIndex(p => p.id === editingProduct.id);
       if (existingIndex >= 0) {
         const updatedProducts = [...products];
-        updatedProducts[existingIndex] = editingProduct;
+        updatedProducts[existingIndex] = productToSave;
         setProducts(updatedProducts);
       } else {
-        setProducts([...products, editingProduct]);
+        setProducts([...products, productToSave]);
       }
       setEditingProduct(null);
       setShowProductForm(false);
@@ -502,7 +636,7 @@ export default function Home() {
         )}
         {showActions && (
           <div className="text-sm text-gray-500">
-            <p>Stock: {product.stock}</p>
+            <p>Stock: {product.in_stock}</p>
             <p>Category: {product.category}</p>
           </div>
         )}
@@ -953,10 +1087,10 @@ export default function Home() {
                     onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="chairs">Chairs</option>
-                    <option value="tables">Tables</option>
-                    <option value="bounce_houses">Bounce Houses</option>
-                    <option value="accessories">Accessories</option>
+                    <option value="jumpers">Jumpers</option>
+                    <option value="sillas">Sillas</option>
+                    <option value="mesas">Mesas</option>
+                    <option value="accesorios">Accesorios</option>
                   </select>
                 </div>
               </div>
@@ -996,8 +1130,8 @@ export default function Home() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Stock</label>
                   <input
                     type="number"
-                    value={editingProduct.stock}
-                    onChange={(e) => setEditingProduct({...editingProduct, stock: Number(e.target.value)})}
+                    value={editingProduct.in_stock}
+                    onChange={(e) => setEditingProduct({...editingProduct, in_stock: Number(e.target.value)})}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
