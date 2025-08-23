@@ -18,16 +18,11 @@ import ChatWidget from './components/ChatWidget';
 import { useAdmin } from './hooks/useAdmin';
 
 export default function Home() {
-  // ============================
-  // STATE - GENERAL
-  // ============================
+  // STATE
   const [currentView, setCurrentView] = useState<'home' | 'sales' | 'rentals' | 'about'>('home');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState<boolean>(false);
-
-  // ============================
-  // STATE - CUSTOMER
-  // ============================
+  
   const [customerData, setCustomerData] = useState<CustomerData>({
     name: '',
     phone: '',
@@ -36,18 +31,12 @@ export default function Home() {
     eventType: 'sale'
   });
 
-  // ============================
-  // STATE - DATA
-  // ============================
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
-  // ============================
-  // ADMIN HOOK
-  // ============================
   const {
     isAdmin,
     showAdminLogin,
@@ -60,49 +49,30 @@ export default function Home() {
     setShowPasswordField
   } = useAdmin();
 
-  // ============================
   // LOAD DATA FROM DB.JSON
-  // ============================
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
         
-        // Load from localStorage first (for persistence)
         const savedProducts = localStorage.getItem('hernandez_products');
         const savedOrders = localStorage.getItem('hernandez_orders');
         const savedCustomers = localStorage.getItem('hernandez_customers');
 
         if (savedProducts && savedOrders && savedCustomers) {
-          // Load from localStorage if available
           setProducts(JSON.parse(savedProducts));
           setOrders(JSON.parse(savedOrders));
           setCustomers(JSON.parse(savedCustomers));
         } else {
-          // Load from db.json if no localStorage data
-          const response = await fetch('/api/data');
-          if (response.ok) {
-            const data = await response.json();
-            setProducts(data.products || []);
-            setOrders(data.orders || []);
-            setCustomers(data.customers || []);
-            
-            // Save to localStorage for persistence
-            localStorage.setItem('hernandez_products', JSON.stringify(data.products || []));
-            localStorage.setItem('hernandez_orders', JSON.stringify(data.orders || []));
-            localStorage.setItem('hernandez_customers', JSON.stringify(data.customers || []));
-          } else {
-            // Fallback: Load db.json directly
-            const dbResponse = await fetch('/data/db.json');
-            const dbData = await dbResponse.json();
-            setProducts(dbData.products || []);
-            setOrders(dbData.orders || []);
-            setCustomers(dbData.customers || []);
-            
-            localStorage.setItem('hernandez_products', JSON.stringify(dbData.products || []));
-            localStorage.setItem('hernandez_orders', JSON.stringify(dbData.orders || []));
-            localStorage.setItem('hernandez_customers', JSON.stringify(dbData.customers || []));
-          }
+          const dbResponse = await fetch('/data/db.json');
+          const dbData = await dbResponse.json();
+          setProducts(dbData.products || []);
+          setOrders(dbData.orders || []);
+          setCustomers(dbData.customers || []);
+          
+          localStorage.setItem('hernandez_products', JSON.stringify(dbData.products || []));
+          localStorage.setItem('hernandez_orders', JSON.stringify(dbData.orders || []));
+          localStorage.setItem('hernandez_customers', JSON.stringify(dbData.customers || []));
         }
       } catch (error) {
         console.error('Error loading data:', error);
@@ -115,9 +85,7 @@ export default function Home() {
     loadData();
   }, []);
 
-  // ============================
   // SAVE DATA WHEN CHANGES
-  // ============================
   useEffect(() => {
     if (!loading && products.length > 0) {
       localStorage.setItem('hernandez_products', JSON.stringify(products));
@@ -136,9 +104,7 @@ export default function Home() {
     }
   }, [customers, loading]);
 
-  // ============================
   // CART FUNCTIONS
-  // ============================
   const addToCart = (product: Product, type: 'sale' | 'rent') => {
     const existingItem = cart.find(item => item.id === product.id && item.type === type);
     if (existingItem) {
@@ -177,9 +143,7 @@ export default function Home() {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  // ============================
-  // WHATSAPP ORDER FUNCTION
-  // ============================
+  // WHATSAPP ORDER
   const sendToWhatsApp = () => {
     if (!customerData.name || !customerData.phone || !customerData.address) {
       alert('Please complete all required fields');
@@ -189,7 +153,6 @@ export default function Home() {
     const total = getTotalPrice();
     const orderId = `ORD${Date.now()}`;
     
-    // Create new order
     const newOrder: Order = {
       id: orderId,
       customer: customerData,
@@ -201,7 +164,6 @@ export default function Home() {
     
     setOrders([...orders, newOrder]);
 
-    // Add or update customer
     const existingCustomer = customers.find(c => c.phone === customerData.phone);
     if (existingCustomer) {
       setCustomers(customers.map(c => 
@@ -231,7 +193,6 @@ export default function Home() {
       setCustomers([...customers, newCustomer]);
     }
     
-    // Create WhatsApp message
     let message = `🎉 NEW ORDER - HERNANDEZ JUMPERS\n\n`;
     message += `📋 Order ID: ${orderId}\n`;
     message += `👤 Customer: ${customerData.name}\n`;
@@ -258,15 +219,12 @@ export default function Home() {
     const url = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
     window.open(url, '_blank');
     
-    // Reset
     setCart([]);
     setCustomerData({ name: '', phone: '', address: '', rentDate: '', eventType: 'sale' });
     setShowCart(false);
   };
 
-  // ============================
-  // FILTER FUNCTIONS
-  // ============================
+  // FILTERS
   const saleProducts = products.filter(p => 
     p.business_type === 'sale' || p.business_type === 'both'
   );
@@ -274,9 +232,7 @@ export default function Home() {
     p.business_type === 'rent' || p.business_type === 'both'
   );
 
-  // ============================
-  // LOADING STATE
-  // ============================
+  // LOADING
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -288,9 +244,7 @@ export default function Home() {
     );
   }
 
-  // ============================
-  // ERROR STATE
-  // ============================
+  // ERROR
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -307,9 +261,7 @@ export default function Home() {
     );
   }
 
-  // ============================
-  // MAIN RENDER
-  // ============================
+  // RENDER
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header 
@@ -325,7 +277,6 @@ export default function Home() {
       />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* ADMIN PANEL */}
         {isAdmin && (
           <AdminPanel 
             products={products}
@@ -337,7 +288,6 @@ export default function Home() {
           />
         )}
 
-        {/* PUBLIC VIEWS */}
         {!isAdmin && currentView === 'home' && (
           <>
             <Hero setCurrentView={setCurrentView} />
@@ -372,7 +322,6 @@ export default function Home() {
         )}
       </main>
 
-      {/* MODALS */}
       <AdminLogin 
         showAdminLogin={showAdminLogin}
         setShowAdminLogin={setShowAdminLogin}
