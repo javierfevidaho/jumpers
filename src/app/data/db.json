@@ -1,0 +1,513 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "New 13x13 Bounce House - FOR SALE",
+      "description": "Brand new 13x13 bounce house for sale. Includes blower, repair kit, and 2-year warranty on seams. Perfect for starting your rental business.",
+      "price": 1300,
+      "rent_price": 0,
+      "category": "jumpers",
+      "business_type": "sale",
+      "in_stock": 3,
+      "images": [
+        "/images/sales/brinca-brinca-13x13.jpg",
+        "/images/sales/brinca-brinca-13x13-2.jpg"
+      ],
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "16ft High Water Slide",
+      "description": "16ft high water slide with new design, motor included, 2-year warranty on seams",
+      "price": 2400,
+      "rent_price": 300,
+      "category": "jumpers",
+      "business_type": "both",
+      "in_stock": 3,
+      "images": [
+        "/images/sales/water-slide-16ft.jpg",
+        "/images/sales/water-slide-16ft-2.jpg"
+      ],
+      "created_at": "2024-01-15T10:05:00Z",
+      "updated_at": "2024-01-15T10:05:00Z"
+    },
+    {
+      "id": 3,
+      "name": "Duramax Chairs (Box of 8 units)",
+      "description": "Box of 8 Duramax chairs. Available in white, black and beige. $13 each chair",
+      "price": 104,
+      "rent_price": 20,
+      "category": "sillas",
+      "business_type": "both",
+      "in_stock": 25,
+      "images": [
+        "/images/sales/sillas-duramax-blancas.jpg",
+        "/images/sales/sillas-duramax-negras.jpg",
+        "/images/sales/sillas-duramax-beige.jpg"
+      ],
+      "created_at": "2024-01-15T10:10:00Z",
+      "updated_at": "2024-01-15T10:10:00Z"
+    },
+    {
+      "id": 4,
+      "name": "Duramax Pro 6ft Rectangular Table",
+      "description": "Duramax Pro industrial quality 6ft rectangular table. Available folding and non-folding",
+      "price": 60,
+      "rent_price": 15,
+      "category": "mesas",
+      "business_type": "both",
+      "in_stock": 20,
+      "images": [
+        "/images/sales/mesa-rectangular-6ft.jpg",
+        "/images/sales/mesa-rectangular-6ft-folded.jpg",
+        "/images/sales/mesa-rectangular-setup.jpg"
+      ],
+      "created_at": "2024-01-15T10:15:00Z",
+      "updated_at": "2024-01-15T10:15:00Z"
+    },
+    {
+      "id": 5,
+      "name": "60-Inch Round Table",
+      "description": "60-inch round table Duramax, perfect for large events",
+      "price": 120,
+      "rent_price": 25,
+      "category": "mesas",
+      "business_type": "both",
+      "in_stock": 15,
+      "images": [
+        "/images/sales/mesa-redonda-60.jpg",
+        "/images/sales/mesa-redonda-60-setup.jpg",
+        "/images/sales/mesa-redonda-60-event.jpg"
+      ],
+      "created_at": "2024-01-15T10:20:00Z",
+      "updated_at": "2024-01-15T10:20:00Z"
+    },
+    {
+      "id": 6,
+      "name": "Duramax Kids Chairs",
+      "description": "Duramax brand kids chairs. Available in white, pink, blue and yellow",
+      "price": 12,
+      "rent_price": 3,
+      "category": "sillas",
+      "business_type": "both",
+      "in_stock": 40,
+      "images": [
+        "/images/sales/sillas-ninos-colores.jpg",
+        "/images/sales/sillas-ninos-blancas.jpg",
+        "/images/sales/sillas-ninos-azules.jpg",
+        "/images/sales/sillas-ninos-rosas.jpg",
+        "/images/sales/sillas-ninos-amarillas.jpg"
+      ],
+      "created_at": "2024-01-15T10:25:00Z",
+      "updated_at": "2024-01-15T10:25:00Z"
+    },
+    {
+      "id": 7,
+      "name": "Duramax 4ft Kids Table",
+      "description": "Duramax 4ft kids table, perfect for children's parties",
+      "price": 55,
+      "rent_price": 12,
+      "category": "mesas",
+      "business_type": "both",
+      "in_stock": 12,
+      "images": [
+        "/images/sales/mesa-ninos-4ft.jpg",
+        "/images/sales/mesa-ninos-4ft-setup.jpg"
+      ],
+      "created_at": "2024-01-15T10:30:00Z",
+      "updated_at": "2024-01-15T10:30:00Z"
+    },
+    {
+      "id": 8,
+      "name": "Sand Bags (4 units)",
+      "description": "Set of 4 sand bags to secure bounce houses. Weigh 40 to 50 pounds each",
+      "price": 100,
+      "rent_price": 20,
+      "category": "accesorios",
+      "business_type": "both",
+      "in_stock": 10,
+      "images": [
+        "/images/sales/costales-arena.jpg",
+        "/images/sales/costales-arena-2.jpg",
+        "/images/sales/costales-arena-3.jpg",
+        "/images/sales/costales-arena-4.jpg",
+        "/images/sales/costales-arena-5.jpg"
+      ],
+      "created_at": "2024-01-15T10:35:00Z",
+      "updated_at": "2024-01-15T10:35:00Z"
+    },
+    {
+      "id": 9,
+      "name": "Bounce House Stakes",
+      "description": "Metal stakes to secure bounce houses to the ground",
+      "price": 8,
+      "rent_price": 2,
+      "category": "accesorios",
+      "business_type": "both",
+      "in_stock": 50,
+      "images": [
+        "/images/sales/estacas-metalicas.jpg",
+        "/images/sales/estacas-metalicas-uso.jpg"
+      ],
+      "created_at": "2024-01-15T10:40:00Z",
+      "updated_at": "2024-01-15T10:40:00Z"
+    },
+    {
+      "id": 10,
+      "name": "Bounce House Banners (Pair)",
+      "description": "Pair of decorative banners. Designs: Frozen, Lilo & Stitch, Princesses, Cars, Spiderman, Toy Story, Minecraft",
+      "price": 100,
+      "rent_price": 25,
+      "category": "accesorios",
+      "business_type": "both",
+      "in_stock": 15,
+      "images": [
+        "/images/sales/banners-frozen-cars.jpg",
+        "/images/sales/banners-frozen-cars-2.jpg",
+        "/images/sales/banners-princesas.jpg",
+        "/images/sales/banners-spiderman.jpg",
+        "/images/sales/banners-spiderman-2.jpg"
+      ],
+      "created_at": "2024-01-15T10:45:00Z",
+      "updated_at": "2024-01-15T10:45:00Z"
+    },
+    {
+      "id": 11,
+      "name": "6ft Rectangular Tablecloths",
+      "description": "6ft rectangular fabric tablecloths, good quality. Available in white and black",
+      "price": 10,
+      "rent_price": 3,
+      "category": "accesorios",
+      "business_type": "both",
+      "in_stock": 30,
+      "images": [
+        "/images/sales/manteles-blancos.jpg",
+        "/images/sales/manteles-negros.jpg"
+      ],
+      "created_at": "2024-01-15T10:50:00Z",
+      "updated_at": "2024-01-15T10:50:00Z"
+    },
+    {
+      "id": 13,
+      "name": "Bounce House with Slide & Stopper",
+      "description": "New bounce house with slide and safety stopper, includes motor, 2-year warranty on seams",
+      "price": 2200,
+      "rent_price": 280,
+      "category": "jumpers",
+      "business_type": "both",
+      "in_stock": 2,
+      "images": [
+        "/images/sales/brinca-resbaladilla-tope.jpg",
+        "/images/sales/brinca-resbaladilla-tope-2.jpg",
+        "/images/sales/brinca-resbaladilla-tope-3.jpg"
+      ],
+      "created_at": "2024-01-15T10:55:00Z",
+      "updated_at": "2024-01-15T10:55:00Z"
+    },
+    {
+      "id": 101,
+      "name": "16ft double-slide water slide",
+      "description": "Double the fun with our 16ft inflatable water slide! Perfect for parties and events, safe, durable, and ideal for hours of wet and wild entertainment.",
+      "price": 0,
+      "rent_price": 250,
+      "category": "jumpers",
+      "business_type": "rent",
+      "in_stock": 8,
+      "images": [
+        "/images/rents/16ft-double-slide-water.jpg",
+        "/images/rents/16ft-double-slide-water-2.jpg"
+      ],
+      "created_at": "2024-01-15T11:00:00Z",
+      "updated_at": "2024-01-15T11:00:00Z"
+    },
+    {
+      "id": 102,
+      "name": "16ft slide water",
+      "description": "Make a splash at your party with our 16ft inflatable water slide! Safe, durable, and perfect for keeping kids and guests cool and entertained.",
+      "price": 0,
+      "rent_price": 190,
+      "category": "jumpers",
+      "business_type": "rent",
+      "in_stock": 5,
+      "images": [
+        "/images/rents/16ft-slide-water.jpg",
+        "/images/rents/16ft-slide-water-2.jpg",
+        "/images/rents/16ft-slide-water-3.jpg"
+      ],
+      "created_at": "2024-01-15T11:05:00Z",
+      "updated_at": "2024-01-15T11:05:00Z"
+    },
+    {
+      "id": 103,
+      "name": "Boxing ring - comes with 4 gloves",
+      "description": "Bring the fun to your party or event with our inflatable boxing ring! Safe, durable, and comes with 4 oversized gloves for exciting matches everyone can enjoy.",
+      "price": 0,
+      "rent_price": 160,
+      "category": "jumpers",
+      "business_type": "rent",
+      "in_stock": 3,
+      "images": [
+        "/images/rents/Boxing ring.jpg",
+        "/images/rents/Boxing ring-2.jpg",
+        "/images/rents/Boxing ring-3.jpg",
+        "/images/rents/Boxing ring-4.jpg",
+        "/images/rents/Boxing ring-5.jpg",
+        "/images/rents/Boxing ring-6.jpg",
+        "/images/rents/Boxing ring-7.jpg"
+      ],
+      "created_at": "2024-01-15T11:10:00Z",
+      "updated_at": "2024-01-15T11:10:00Z"
+    },
+    {
+      "id": 104,
+      "name": "Jump Slide & Pool – Classic Colors",
+      "description": "Bring fun to any party with our inflatable jump slide and pool in vibrant classic colors! Safe, durable, and perfect for kids to jump, slide, and splash.",
+      "price": 0,
+      "rent_price": 170,
+      "category": "jumpers",
+      "business_type": "rent",
+      "in_stock": 4,
+      "images": [
+        "/images/rents/Jump-slide-and-pool.jpg",
+        "/images/rents/Jump-slide-and-pool-2.jpg",
+        "/images/rents/Jump-slide-and-pool-3.jpg",
+        "/images/rents/Jump-slide-and-pool-4.jpg",
+        "/images/rents/Jump-slide-and-pool-5.jpg",
+        "/images/rents/Jump-slide-and-pool-6.jpg",
+        "/images/rents/Jump-slide-and-pool-7.jpg"
+      ],
+      "created_at": "2024-01-15T11:15:00Z",
+      "updated_at": "2024-01-15T11:15:00Z"
+    },
+    {
+      "id": 105,
+      "name": "Jungle jumper",
+      "description": "Bring the adventure to your party with our Jungle Jump inflatable! Safe, colorful, and perfect for hours of fun and active play for kids.",
+      "price": 0,
+      "rent_price": 100,
+      "category": "jumpers",
+      "business_type": "rent",
+      "in_stock": 2,
+      "images": [
+        "/images/rents/Jungle-jumper.jpg",
+        "/images/rents/Jungle-jumper-2.jpg",
+        "/images/rents/Jungle-jumper-3.jpg",
+        "/images/rents/Jungle-jumper-4.jpg"
+      ],
+      "created_at": "2024-01-15T11:20:00Z",
+      "updated_at": "2024-01-15T11:20:00Z"
+    },
+    {
+      "id": 106,
+      "name": "Lego jumper",
+      "description": "Add colorful fun to your event with our Lego Jumper inflatable! Safe, vibrant, and perfect for kids to jump, play, and enjoy endless entertainment.",
+      "price": 0,
+      "rent_price": 100,
+      "category": "jumpers",
+      "business_type": "rent",
+      "in_stock": 2,
+      "images": [
+        "/images/rents/Lego-jumper.jpg",
+        "/images/rents/Lego-jumper-2.jpg",
+        "/images/rents/Lego-jumper-3.jpg",
+        "/images/rents/Lego-jumper-4.jpg"
+      ],
+      "created_at": "2024-01-15T11:25:00Z",
+      "updated_at": "2024-01-15T11:25:00Z"
+    },
+    {
+      "id": 107,
+      "name": "Pink Jumper",
+      "description": "Bring the fun to your party with our Pink Jumper inflatable! Safe, bright, and perfect for kids to jump, play, and have a blast.",
+      "price": 0,
+      "rent_price": 100,
+      "category": "jumpers",
+      "business_type": "rent",
+      "in_stock": 2,
+      "images": [
+        "/images/rents/Pink-Jumper.jpg",
+        "/images/rents/Pink-Jumper-2.jpg"
+      ],
+      "created_at": "2024-01-15T11:30:00Z",
+      "updated_at": "2024-01-15T11:30:00Z"
+    },
+    {
+      "id": 108,
+      "name": "Obstacle Course Jumper – Endless Fun",
+      "description": "Turn your event into an unforgettable adventure! 🎉 Our Obstacle Course Jumper is available for rent at $250. Perfect for kids and adults, with delivery and safe setup included.",
+      "price": 0,
+      "rent_price": 250,
+      "category": "jumpers",
+      "business_type": "rent",
+      "in_stock": 2,
+      "images": [
+        "/images/rents/obstacle.jpg",
+        "/images/rents/obstacle-2.jpg",
+        "/images/rents/obstacle-3.jpg",
+        "/images/rents/obstacle-4.jpg"
+      ],
+      "created_at": "2024-01-15T11:35:00Z",
+      "updated_at": "2024-01-15T11:35:00Z"
+    },
+    {
+      "id": 109,
+      "name": "Tables & Chairs Rental",
+      "description": "Rent a complete set with 1 table and 6 chairs for just $13! Extra chairs available at $1.50 each – perfect for parties, events, and gatherings.",
+      "price": 0,
+      "rent_price": 13,
+      "category": "mesas",
+      "business_type": "rent",
+      "in_stock": 25,
+      "images": [
+        "/images/rents/Tables-chairs.jpg",
+        "/images/rents/Tables-chairs-2.jpg",
+        "/images/rents/Tables-chairs-3.jpg",
+        "/images/rents/Tables-chairs-4.jpg",
+        "/images/rents/Tables-chairs-5.jpg",
+        "/images/rents/Tables-chairs-6.jpg"
+      ],
+      "created_at": "2024-01-15T11:40:00Z",
+      "updated_at": "2024-01-15T11:40:00Z"
+    },
+    {
+      "id": 110,
+      "name": "Folding Chairs (White) when you rent tables",
+      "description": "Comfortable white folding chairs, perfect for outdoor events and casual gatherings.",
+      "price": 0,
+      "rent_price": 1.50,
+      "category": "sillas",
+      "business_type": "rent",
+      "in_stock": 150,
+      "images": [
+        "/images/rents/Tables-chairs-6.jpg"
+      ],
+      "created_at": "2024-01-15T11:45:00Z",
+      "updated_at": "2024-01-15T11:45:00Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "customer_name": "Maria Rodriguez",
+      "customer_phone": "480-555-0123",
+      "customer_email": "maria@email.com",
+      "customer_address": "123 Main St, Phoenix, AZ 85001",
+      "event_date": "2024-12-15",
+      "event_type": "rent",
+      "items": [
+        {
+          "product_id": 101,
+          "product_name": "16ft double-slide water slide",
+          "quantity": 1,
+          "price": 250,
+          "type": "rent"
+        },
+        {
+          "product_id": 109,
+          "product_name": "Tables & Chairs Rental",
+          "quantity": 2,
+          "price": 13,
+          "type": "rent"
+        }
+      ],
+      "total": 276,
+      "status": "confirmed",
+      "notes": "Delivery at 8:00 AM, pickup at 6:00 PM",
+      "created_at": "2024-08-20T10:30:00Z",
+      "updated_at": "2024-08-20T14:15:00Z"
+    },
+    {
+      "id": 2,
+      "customer_name": "John Smith",
+      "customer_phone": "623-555-0456",
+      "customer_email": "john.smith@email.com",
+      "customer_address": "456 Oak Ave, Scottsdale, AZ 85251",
+      "event_date": null,
+      "event_type": "sale",
+      "items": [
+        {
+          "product_id": 3,
+          "product_name": "Duramax Chairs (Box of 8 units)",
+          "quantity": 2,
+          "price": 104,
+          "type": "sale"
+        }
+      ],
+      "total": 208,
+      "status": "pending",
+      "notes": "Customer will pick up",
+      "created_at": "2024-08-21T14:15:00Z",
+      "updated_at": "2024-08-21T14:15:00Z"
+    }
+  ],
+  "customers": [
+    {
+      "id": 1,
+      "name": "Maria Rodriguez",
+      "phone": "480-555-0123",
+      "email": "maria@email.com",
+      "address": "123 Main St, Phoenix, AZ 85001",
+      "total_orders": 3,
+      "last_order": "2024-08-15",
+      "notes": "Prefers morning deliveries",
+      "created_at": "2024-01-15T09:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "John Smith",
+      "phone": "623-555-0456",
+      "email": "john.smith@email.com",
+      "address": "456 Oak Ave, Scottsdale, AZ 85251",
+      "total_orders": 1,
+      "last_order": "2024-08-21",
+      "notes": "New customer",
+      "created_at": "2024-08-21T14:00:00Z"
+    }
+  ],
+  "settings": {
+    "business_info": {
+      "name": "Hernandez Jumpers",
+      "address": "330 N 21st Ave, Phoenix, AZ 85009",
+      "email": "hernandezjumpers@gmail.com",
+      "contacts": [
+        {
+          "name": "Fidel Hernandez",
+          "phone": "4804381258",
+          "languages": "English & Spanish",
+          "whatsapp": "4804381258"
+        },
+        {
+          "name": "Yesii Molina",
+          "phone": "6234180360",
+          "languages": "Spanish",
+          "whatsapp": "6234180360"
+        }
+      ]
+    },
+    "delivery": {
+      "free_delivery_radius": 15,
+      "delivery_fee": 25,
+      "areas": [
+        "Phoenix",
+        "Scottsdale",
+        "Tempe",
+        "Mesa",
+        "Chandler",
+        "Glendale"
+      ]
+    },
+    "rental_policies": {
+      "minimum_rental_period": 4,
+      "deposit_percentage": 50,
+      "cancellation_hours": 24,
+      "rental_terms": [
+        "Minimum 4-hour rental period",
+        "Delivery and pickup included within 15 miles",
+        "Setup service available for additional fee",
+        "Cancellation must be 24 hours in advance",
+        "50% deposit required to secure booking"
+      ]
+    }
+  }
+}
